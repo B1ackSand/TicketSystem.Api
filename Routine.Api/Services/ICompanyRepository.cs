@@ -3,7 +3,7 @@ using Routine.Api.Entities;
 
 namespace Routine.Api.Services
 {
-    //仓储接口，负责放置一些重复性的代码如CURD操作
+    //仓储接口，负责放置一些重复性的代码如CURD操作，顺带有解耦作用
     public interface ICompanyRepository
     {
         Task<IEnumerable<Company>> GetCompaniesAsync(CompanyDtoParameters? parameters);

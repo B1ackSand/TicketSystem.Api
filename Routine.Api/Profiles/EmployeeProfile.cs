@@ -4,6 +4,7 @@ using Routine.Api.Models;
 
 namespace Routine.Api.Profiles
 {
+    //Dto和entity的映射关系，区分dto中的成员和entity的对应关系
     public class EmployeeProfile: Profile
     {
         public EmployeeProfile()

@@ -17,10 +17,12 @@ namespace Routine.Api.Controllers
 
         public CompanyCollectionsController(IMapper mapper, ICompanyRepository companyRepository)
         {
+            //数据库操作和类映射注入到Controller
             _mapper = mapper;
             _companyRepository = companyRepository;
         }
 
+        //此处用到了自定义model绑定器，仅参考
         [HttpGet("({ids})", Name = nameof(GetCompanyCollection))]
         public async Task<IActionResult> GetCompanyCollection(
             [FromRoute]
@@ -45,6 +47,7 @@ namespace Routine.Api.Controllers
             return Ok(dtoToReturn);
         }
 
+        //Post请求，一次性创建含有员工的多个公司的集合
         [HttpPost]
         public async Task<ActionResult<IEnumerable<CompanyDto>>> CreateCompanyCollection(
             IEnumerable<CompanyAddDto> companyCollection)

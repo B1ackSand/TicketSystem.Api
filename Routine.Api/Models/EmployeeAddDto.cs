@@ -2,6 +2,7 @@
 
 namespace Routine.Api.Models
 {
+    //面向外部的models
     public class EmployeeAddDto
     {
         public string EmployeeNo { get; set; }

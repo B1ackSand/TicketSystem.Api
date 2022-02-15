@@ -13,7 +13,7 @@ namespace Routine.Api.Controllers
     [Route("api/companies")]
     public class CompaniesController : ControllerBase
     {
-        //数据库操作注入到Controller
+        //数据库操作和类映射注入到Controller
         private readonly ICompanyRepository _companyRepository;
         private readonly IMapper _mapper;
 

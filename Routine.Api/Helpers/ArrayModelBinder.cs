@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Routine.Api.Helpers
 {
-    // 自定义model绑定器
+    // 自定义model绑定器，仅供参考
     public class ArrayModelBinder : IModelBinder
     {
         public Task BindModelAsync(ModelBindingContext bindingContext)

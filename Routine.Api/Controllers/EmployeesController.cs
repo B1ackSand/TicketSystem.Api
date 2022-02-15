@@ -13,6 +13,7 @@ namespace Routine.Api.Controllers
         private readonly ICompanyRepository _companyRepository;
         private readonly IMapper _mapper;
 
+        //数据库操作和类映射注入到Controller
         public EmployeesController(ICompanyRepository companyRepository, IMapper mapper)
         {
             _companyRepository = companyRepository ?? throw new ArgumentNullException(nameof(companyRepository));

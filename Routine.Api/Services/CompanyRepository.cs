@@ -5,17 +5,17 @@ using Routine.Api.Entities;
 
 namespace Routine.Api.Services
 {
+    //服务类实现业务逻辑
     public class CompanyRepository : ICompanyRepository
     {
-        // 进入DbContext操作数据库
         private readonly RoutineDbContext _context;
-
 
         public CompanyRepository(RoutineDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
+        //获取所有公司的函数方法，其中实现业务逻辑：根据API消费者传入的parameter来判断并返回，此处用类来代表参数可以达到解耦作用，方便后期重构代码
         public async Task<IEnumerable<Company>> GetCompaniesAsync(CompanyDtoParameters? parameters)
         {
             if (parameters == null)
@@ -29,6 +29,7 @@ namespace Routine.Api.Services
                 return await _context.Companies.ToListAsync();
             }
 
+            //查询表达式
             var queryExpression = _context.Companies as IQueryable<Company>;
 
             if (!string.IsNullOrWhiteSpace(parameters.CompanyName))
@@ -47,6 +48,7 @@ namespace Routine.Api.Services
             return await queryExpression.ToListAsync();
         }
 
+        //根据传入的公司ID来返回公司
         public async Task<Company> GetCompaniesAsync(Guid companyId)
         {
             if (companyId == Guid.Empty)

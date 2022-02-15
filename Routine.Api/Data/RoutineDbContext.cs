@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Routine.Api.Entities;
 
-// 数据库上下文，将数据视为对象并负责与之进行交互的主类
+// 数据库上下文，将数据视为对象并负责与之进行交互的主类（？）
+// 由视角来看是初始化数据库所用
 namespace Routine.Api.Data
 {
     public class RoutineDbContext : DbContext
