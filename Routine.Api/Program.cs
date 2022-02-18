@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Serialization;
 using Routine.Api.Data;
 using Routine.Api.Services;
 
@@ -12,10 +14,39 @@ builder.Services.AddControllers(setup =>
     setup.ReturnHttpNotAcceptable = true;
     //内容协商，以支持xml格式请求(旧写法)
     //setup.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
-    //setup.Input...
-    
-    //添加xml格式化器
-}).AddXmlDataContractSerializerFormatters();
+    //setup.InputFormatters...
+
+
+})
+    .ConfigureApiBehaviorOptions(setup =>
+    {
+        //自定义错误报告
+        setup.InvalidModelStateResponseFactory = context =>
+        {
+            var problemDetails = new ValidationProblemDetails(context.ModelState)
+            {
+                Type = "http://www.baidu.com",
+                Title = "错误",
+                Status = StatusCodes.Status422UnprocessableEntity,
+                Detail = "请看详细信息",
+                Instance = context.HttpContext.Request.Path
+            };
+
+            problemDetails.Extensions.Add("traceId", context.HttpContext.TraceIdentifier);
+            return new UnprocessableEntityObjectResult(problemDetails)
+            {
+                ContentTypes = { "application/problem+json" }
+            };
+        };
+    })
+    .AddNewtonsoftJson(setup =>
+    {
+        setup.SerializerSettings.ContractResolver =
+            new CamelCasePropertyNamesContractResolver();
+    })
+    //添加xml序列化器
+    .AddXmlSerializerFormatters()
+    .AddXmlDataContractSerializerFormatters();
 
 //注册AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -46,7 +77,7 @@ else
 {
     app.UseExceptionHandler(appBuilder =>
     {
-        appBuilder.Run(async context=>
+        appBuilder.Run(async context =>
         {
             context.Response.StatusCode = 500;
             await context.Response.WriteAsync("Unexpected Error!");

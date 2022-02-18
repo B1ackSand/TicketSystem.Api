@@ -38,7 +38,6 @@ namespace Routine.Api.Controllers
             //面向外部的models输出
             var companyDtos = _mapper.Map<IEnumerable<CompanyDto>>(companies);
 
-
             //集合转化为json格式
             //return new JsonResult(companies);
             //return Ok(companies);
@@ -69,7 +68,35 @@ namespace Routine.Api.Controllers
 
             var returnDto = _mapper.Map<CompanyDto>(entity);
 
-            return CreatedAtRoute(nameof(GetCompany), new {companyId = returnDto.Id}, returnDto);
+            return CreatedAtRoute(nameof(GetCompany), new { companyId = returnDto.Id }, returnDto);
+        }
+
+
+        //删除，需要考虑级联删除
+        [HttpDelete("{companyId}")]
+        public async Task<IActionResult> DeleteCompany(Guid companyId)
+        {
+            var companyEntity = await _companyRepository.GetCompaniesAsync(companyId);
+
+            if (companyEntity == null)
+            {
+                return NotFound();
+            }
+
+            await _companyRepository.GetEmployeesAsync(companyId, null, null);
+            _companyRepository.DeleteCompany(companyEntity);
+
+            await _companyRepository.SaveAsync();
+
+            return NoContent();
+        }
+
+        //一般可以不写
+        [HttpOptions]
+        public IActionResult GetCompaniesOptions()
+        {
+            Response.Headers.Add("Allow","GET,POST,OPTIONS");
+            return Ok();
         }
     }
 }

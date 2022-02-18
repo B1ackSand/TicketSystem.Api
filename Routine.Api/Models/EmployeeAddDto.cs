@@ -1,14 +1,8 @@
-﻿using Routine.Api.Entities;
-
+﻿//面向外部的models
 namespace Routine.Api.Models
 {
-    //面向外部的models
-    public class EmployeeAddDto
+    public class EmployeeAddDto: EmployeeAddOrUpdateDto
     {
-        public string EmployeeNo { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public Gender Gender { get; set; }
-        public DateTime DateOfBirth { get; set; }
+
     }
 }

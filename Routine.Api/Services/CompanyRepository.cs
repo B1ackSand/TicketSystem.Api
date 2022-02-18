@@ -5,7 +5,7 @@ using Routine.Api.Entities;
 
 namespace Routine.Api.Services
 {
-    //服务类实现业务逻辑
+    //形成合约，全部拿出来，减少重复代码，方便单元测试，更关注业务逻辑
     public class CompanyRepository : ICompanyRepository
     {
         private readonly RoutineDbContext _context;
@@ -23,13 +23,7 @@ namespace Routine.Api.Services
                 throw new ArgumentNullException(nameof(parameters));
             }
 
-            if (string.IsNullOrWhiteSpace(parameters.CompanyName) &&
-                string.IsNullOrWhiteSpace(parameters.SearchTerm))
-            {
-                return await _context.Companies.ToListAsync();
-            }
-
-            //查询表达式
+            //查询表达式,延迟执行，组件了一个命令，根据条件进行过滤和搜索 
             var queryExpression = _context.Companies as IQueryable<Company>;
 
             if (!string.IsNullOrWhiteSpace(parameters.CompanyName))
@@ -44,6 +38,9 @@ namespace Routine.Api.Services
                 queryExpression = queryExpression.Where(x =>
                     x.Name.Contains(parameters.SearchTerm) || x.Introduction.Contains(parameters.SearchTerm));
             }
+
+            //翻页
+            queryExpression = queryExpression.Skip(parameters.PageSize * (parameters.PageNumber - 1)).Take(parameters.PageSize);
 
             return await queryExpression.ToListAsync();
         }
@@ -166,6 +163,7 @@ namespace Routine.Api.Services
                 throw new ArgumentNullException(nameof(employeeId));
             }
 
+            //搜索数据库
             return await _context.Employees
                 .Where(x => x.CompanyId == companyId && x.Id == employeeId)
                 .FirstOrDefaultAsync();
@@ -191,9 +189,10 @@ namespace Routine.Api.Services
             _context.Employees.Remove(employee);
         }
 
-        public void UpdateEmployee(Employee employee)
+        public void UpdateEmployee(Employee? employee)
         {
-            // _context.Entry(employee).State = EntityState.Modified;
+            //_context.Entry(employee).State = EntityState.Modified;
+            // ef core 会自动填充代码
         }
 
         public async Task<bool> SaveAsync()
