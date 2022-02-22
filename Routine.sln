@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routine.Api", "Routine.Api\Routine.Api.csproj", "{45957D1F-A35A-4857-B549-DE4D07CF665C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routine.Api", "Routine.Api\Routine.Api.csproj", "{45957D1F-A35A-4857-B549-DE4D07CF665C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketSystem.Api", "TicketSystem.Api\TicketSystem.Api.csproj", "{A499285E-8E03-46A5-9572-313DCEFF6F67}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{45957D1F-A35A-4857-B549-DE4D07CF665C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45957D1F-A35A-4857-B549-DE4D07CF665C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45957D1F-A35A-4857-B549-DE4D07CF665C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A499285E-8E03-46A5-9572-313DCEFF6F67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A499285E-8E03-46A5-9572-313DCEFF6F67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A499285E-8E03-46A5-9572-313DCEFF6F67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A499285E-8E03-46A5-9572-313DCEFF6F67}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

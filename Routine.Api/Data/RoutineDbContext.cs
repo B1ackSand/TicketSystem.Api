@@ -34,6 +34,7 @@ namespace Routine.Api.Data
             modelBuilder.Entity<Employee>()
                 .Property(x => x.LastName).IsRequired().HasMaxLength(50);
 
+            //定义x对x关系
             modelBuilder.Entity<Employee>()
                 .HasOne(x => x.Company)
                 .WithMany(x => x.Employees)
@@ -51,7 +52,7 @@ namespace Routine.Api.Data
                 {
                     Id = Guid.Parse("e185afad-aa89-4d4e-bba0-391ce821ae9d"),
                     Name = "Google",
-                    Introduction = "Evil 111",
+                    Introduction = "Evil 111"
                 },
                 new Company
                 {
