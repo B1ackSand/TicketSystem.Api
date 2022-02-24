@@ -23,7 +23,7 @@ namespace Routine.Api.Services
                 throw new ArgumentNullException(nameof(parameters));
             }
 
-            //查询表达式,延迟执行，组件了一个命令，根据条件进行过滤和搜索 
+            //查询表达式,延迟执行，组件了一个命令，根据条件进行过滤和搜索
             var queryExpression = _context.Companies as IQueryable<Company>;
 
             if (!string.IsNullOrWhiteSpace(parameters.CompanyName))

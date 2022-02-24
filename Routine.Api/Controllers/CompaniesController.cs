@@ -44,7 +44,7 @@ namespace Routine.Api.Controllers
             return Ok(companyDtos);
         }
 
-        [HttpGet("{companyId}",Name = nameof(GetCompany))]
+        [HttpGet("{companyId}", Name = nameof(GetCompany))]
         //[Route("{companyId}")]
         public async Task<ActionResult<CompanyDto>> GetCompany(Guid companyId)
         {
@@ -95,7 +95,7 @@ namespace Routine.Api.Controllers
         [HttpOptions]
         public IActionResult GetCompaniesOptions()
         {
-            Response.Headers.Add("Allow","GET,POST,OPTIONS");
+            Response.Headers.Add("Allow", "GET,POST,OPTIONS");
             return Ok();
         }
     }

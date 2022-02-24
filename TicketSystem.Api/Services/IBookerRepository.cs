@@ -10,6 +10,5 @@ namespace TicketSystem.Api.Services
         void UpdateBooker(Booker booker);
         Task<bool> BookerExistsAsync(string bookerWx);
         Task<bool> SaveAsync();
-        
     }
 }
