@@ -16,6 +16,7 @@ namespace TicketSystem.Api.Profiles
                     opt => opt.MapFrom(src => DateTime.Now.Year - src.DateOfBirth.Year));
 
             CreateMap<BookerAddDto, Booker>();
+            CreateMap<BookerLoginDto, Booker>();
         }
     }
 }

@@ -10,24 +10,24 @@ namespace TicketSystem.Api.Controllers;
 [Route("api/trains")]
 public class TrainController : ControllerBase
 {
-    private readonly ITrainRepository _trainRepository;
+    private readonly ITicketRepository _ticketRepository;
     private readonly IMapper _mapper;
 
-    public TrainController(ITrainRepository trainRepository, IMapper mapper)
+    public TrainController(ITicketRepository trainRepository, IMapper mapper)
     {
-        _trainRepository = trainRepository ?? throw new ArgumentNullException(nameof(trainRepository));
+        _ticketRepository = trainRepository ?? throw new ArgumentNullException(nameof(trainRepository));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
     [HttpGet(Name = nameof(GetTrainDetail))]
     public async Task<ActionResult<TrainOutputDto>> GetTrainDetail(string trainName)
     {
-        if (!await _trainRepository.TrainExistsAsync(trainName))
+        if (!await _ticketRepository.TrainExistsAsync(trainName))
         {
             return NotFound();
         }
 
-        var train = await _trainRepository.GetTrainAsync(trainName);
+        var train = await _ticketRepository.GetTrainAsync(trainName);
         if (train == null)
         {
             return NotFound();
@@ -44,8 +44,8 @@ public class TrainController : ControllerBase
         CreateTrain(TrainAddDto train)
     {
         var entity = _mapper.Map<Train>(train);
-        _trainRepository.AddTrain(entity);
-        await _trainRepository.SaveAsync();
+        _ticketRepository.AddTrain(entity);
+        await _ticketRepository.SaveAsync();
 
         var dtoToReturn = _mapper.Map<TrainOutputDto>(entity);
 

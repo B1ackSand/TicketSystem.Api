@@ -14,16 +14,16 @@ namespace TicketSystem.Api.Services
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<Booker> GetBookerAsync(string bookerWx)
+        public async Task<Booker> GetBookerAsync(string phoneNum)
         {
-            if (bookerWx == null)
+            if (phoneNum == null)
             {
-                throw new ArgumentNullException(nameof(bookerWx));
+                throw new ArgumentNullException(nameof(phoneNum));
             }
 
             //搜索数据库
             return await _context.Bookers
-                .Where(x => x.BookerWx == bookerWx)
+                .Where(x => x.PhoneNum == phoneNum)
                 .FirstOrDefaultAsync();
         }
 
@@ -51,13 +51,24 @@ namespace TicketSystem.Api.Services
             // ef core 会自动填充代码
         }
 
-        public async Task<bool> BookerExistsAsync(string bookerWx)
+        public async Task<bool> BookerExistsAsync(string phoneNum)
         {
-            if (bookerWx == null)
+            if (phoneNum == null)
             {
-                throw new ArgumentNullException(nameof(bookerWx));
+                throw new ArgumentNullException(nameof(phoneNum));
             }
-            return await _context.Bookers.AnyAsync(x => x.BookerWx == bookerWx);
+            return await _context.Bookers.AnyAsync(x => x.PhoneNum == phoneNum);
+        }
+
+        public async Task<bool> BookerPwdVerify(Booker booker)
+        {
+            if (booker == null)
+            {
+                throw new ArgumentNullException(nameof(booker));
+            }
+
+            return await _context.Bookers.AnyAsync(
+                x => x.PhoneNum == booker.PhoneNum && x.BookerPwd == booker.BookerPwd);
         }
 
         public async Task<bool> SaveAsync()

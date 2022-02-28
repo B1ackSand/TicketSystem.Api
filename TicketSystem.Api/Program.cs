@@ -38,6 +38,7 @@ builder.Services.AddControllers(setup =>
     {
         setup.SerializerSettings.ContractResolver =
             new CamelCasePropertyNamesContractResolver();
+        setup.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
     })
     //添加xml序列化器
     .AddXmlSerializerFormatters()
@@ -47,9 +48,7 @@ builder.Services.AddControllers(setup =>
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 //注册服务
-builder.Services.AddScoped<IBookerRepository, BookerRepository>();
-builder.Services.AddScoped<ITrainRepository, TrainRepository>();
-builder.Services.AddScoped<IStationRepository, StationRepository>();
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

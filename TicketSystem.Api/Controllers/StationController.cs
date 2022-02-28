@@ -11,12 +11,12 @@ namespace TicketSystem.Api.Controllers;
 [Route("api/stations")]
 public class StationController : ControllerBase
 {
-    private readonly IStationRepository _stationRepository;
+    private readonly ITicketRepository _ticketRepository;
     private readonly IMapper _mapper;
 
-    public StationController(IStationRepository stationRepository, IMapper mapper)
+    public StationController(ITicketRepository stationRepository, IMapper mapper)
     {
-        _stationRepository = stationRepository;
+        _ticketRepository = stationRepository;
         _mapper = mapper;
     }
 
@@ -26,7 +26,7 @@ public class StationController : ControllerBase
     public async Task<ActionResult<IEnumerable<StationOutputDto>>>
         GetStations([FromQuery] StationDtoParameters? parameters)
     {
-        var stations = await _stationRepository.GetStationsAsync(parameters);
+        var stations = await _ticketRepository.GetStationsAsync(parameters);
 
         var stationDtos = _mapper.Map<IEnumerable<StationOutputDto>>(stations);
 
@@ -37,12 +37,12 @@ public class StationController : ControllerBase
     public async Task<ActionResult<StationOutputDto>>
         GetStation(string stationName)
     {
-        if (!await _stationRepository.StationExistsAsync(stationName))
+        if (!await _ticketRepository.StationExistsAsync(stationName))
         {
             return NotFound();
         }
 
-        var station = await _stationRepository.GetStationAsync(stationName);
+        var station = await _ticketRepository.GetStationAsync(stationName);
         if (station == null)
         {
             return NotFound();
@@ -57,8 +57,8 @@ public class StationController : ControllerBase
         CreateStation(StationAddDto station)
     {
         var entity = _mapper.Map<Station>(station);
-        _stationRepository.AddStation(entity);
-        await _stationRepository.SaveAsync();
+        _ticketRepository.AddStation(entity);
+        await _ticketRepository.SaveAsync();
 
         var dtoToReturn = _mapper.Map<StationOutputDto>(entity);
 

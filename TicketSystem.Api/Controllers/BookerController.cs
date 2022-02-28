@@ -10,25 +10,25 @@ namespace TicketSystem.Api.Controllers;
 [Route("api/bookers")]
 public class BookerController: ControllerBase
 {
-    private readonly IBookerRepository _bookerRepository;
+    private readonly ITicketRepository _ticketRepository;
     private readonly IMapper _mapper;
 
-    public BookerController(IBookerRepository bookerRepository,IMapper mapper)
+    public BookerController(ITicketRepository ticketRepository,IMapper mapper)
     {
-        _bookerRepository = bookerRepository ?? throw new ArgumentNullException(nameof(bookerRepository));
+        _ticketRepository = ticketRepository ?? throw new ArgumentNullException(nameof(ticketRepository));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
     [HttpGet(Name = nameof(GetBooker))]
     public async Task<ActionResult<BookerOutputDto>>
-        GetBooker(string bookerWx)
+        GetBooker(string phoneNum)
     {
-        if (!await _bookerRepository.BookerExistsAsync(bookerWx))
+        if (!await _ticketRepository.BookerExistsAsync(phoneNum))
         {
             return NotFound();
         }
 
-        var booker = await _bookerRepository.GetBookerAsync(bookerWx);
+        var booker = await _ticketRepository.GetBookerAsync(phoneNum);
         if (booker == null)
         {
             return NotFound();
@@ -39,13 +39,33 @@ public class BookerController: ControllerBase
         return Ok(bookerDto);
     }
 
+    [HttpPost("login")]
+    public async Task<ActionResult<BookerOutputDto>> BookerLogin(BookerLoginDto booker)
+    {
+        var entity = _mapper.Map<Booker>(booker);
+        if (!await _ticketRepository.BookerExistsAsync(entity.PhoneNum))
+        {
+            return NotFound();
+        }
+
+        if (!await _ticketRepository.BookerPwdVerify(entity))
+        {
+            return Unauthorized();
+        }
+
+        var bookerImf = await _ticketRepository.GetBookerAsync(entity.PhoneNum);
+
+        var bookerDto = _mapper.Map<BookerOutputDto>(bookerImf);
+        return Ok(bookerDto);
+    }
+
     [HttpPost]
     public async Task<ActionResult<BookerOutputDto>> 
         CreateBooker(BookerAddDto booker)
     {
         var entity = _mapper.Map<Booker>(booker);
-        _bookerRepository.AddBooker(entity);
-        await _bookerRepository.SaveAsync();
+        _ticketRepository.AddBooker(entity);
+        await _ticketRepository.SaveAsync();
 
         var dtoToReturn = _mapper.Map<BookerOutputDto>(entity);
 

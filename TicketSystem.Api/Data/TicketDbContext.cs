@@ -19,6 +19,7 @@ namespace TicketSystem.Api.Data
         public DbSet<Booker>? Bookers { get; set; }
         public DbSet<Train>? Trains { get; set; }
         public DbSet<Station>? Stations { get; set; }
+        public DbSet<Line>? Lines { get; set; }
 
         //在完成对派生上下文的模型的初始化后，并在该模型已锁定并用于初始化上下文之前，进一步提前配置上下文
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -35,7 +36,7 @@ namespace TicketSystem.Api.Data
                 .Property(x => x.IsDeleted).IsRequired().HasMaxLength(10);
             //modelBuilder.Entity<Booker>().Property<bool>("isDeleted");
             //modelBuilder.Entity<Booker>()
-                //.HasQueryFilter(m => EF.Property<bool>(m, "isDeleted") == false);
+            //.HasQueryFilter(m => EF.Property<bool>(m, "isDeleted") == false);
 
             modelBuilder.Entity<Train>()
                 .Property(x => x.TrainName).IsRequired().HasMaxLength(5);
@@ -47,6 +48,13 @@ namespace TicketSystem.Api.Data
             modelBuilder.Entity<Station>()
                 .Property(x => x.IsTerminal).IsRequired().HasDefaultValue(false);
 
+
+            modelBuilder.Entity<Line>()
+                .Property(x => x.StartTerminal).IsRequired().HasMaxLength(20);
+            modelBuilder.Entity<Line>()
+                .Property(x => x.StopStation).IsRequired().HasMaxLength(200);
+            modelBuilder.Entity<Line>()
+                .Property(x => x.EndTerminal).IsRequired().HasMaxLength(20);
 
             //定义x对x关系
             /*modelBuilder.Entity<Employee>()
@@ -66,7 +74,7 @@ namespace TicketSystem.Api.Data
                     FirstName = "李",
                     LastName = "黑沙",
                     Gender = Gender.男,
-                    DateOfBirth = new DateTime(2000,01,09),
+                    DateOfBirth = new DateTime(2000, 01, 09),
                     PhoneNum = "12345678901",
                     TimeOfRegister = DateTime.Now,
                     IsDeleted = false
@@ -109,7 +117,7 @@ namespace TicketSystem.Api.Data
                 {
                     Id = Guid.Parse("72457e73-ea34-4e02-b575-8d384e82a481"),
                     StationName = "北京站",
-                    IsTerminal = true
+                    IsTerminal = false
                 },
                 new Station
                 {
@@ -121,13 +129,108 @@ namespace TicketSystem.Api.Data
                 {
                     Id = Guid.Parse("0846ff99-37ac-4849-804b-1eefac46d651"),
                     StationName = "成都站",
-                    IsTerminal = false
+                    IsTerminal = true
                 },
                 new Station
                 {
                     Id = Guid.Parse("07c4638c-48b7-4783-88a5-58f47e2a0458"),
                     StationName = "哈尔滨站",
                     IsTerminal = true
+                },
+                new Station
+                {
+                    Id = Guid.Parse("09626794-5565-452e-85a4-b924805588ba"),
+                    StationName = "武汉站",
+                    IsTerminal = false
+                });
+
+            modelBuilder.Entity<Line>().HasData(
+                new Line
+                {
+                    Id = Guid.Parse("92d0ada0-2cd0-4cc9-b03d-3eccf17ab1a5"),
+                    StartTerminal = "广州站",
+                    EndTerminal = "哈尔滨站",
+                    StopStation = "广州站,武汉站,北京站,哈尔滨站"
+                },
+                new Line
+                {
+                    Id = Guid.Parse("18c9ecbb-dc2c-43e8-ba77-9a6cef3ac9bc"),
+                    StartTerminal = "广州站",
+                    EndTerminal = "成都站",
+                    StopStation = "广州站,重庆站,成都站"
+                },
+                new Line
+                {
+                    Id = Guid.Parse("cbead21b-0681-4a1a-853f-d5b61fd48f54"),
+                    StartTerminal = "广州站",
+                    EndTerminal = "上海站",
+                    StopStation = "广州站,武汉站,上海站"
+                },
+
+                new Line
+                {
+                    Id = Guid.Parse("10687777-24de-4a07-a677-633031ae1009"),
+                    StartTerminal = "上海站",
+                    EndTerminal = "哈尔滨站",
+                    StopStation = "上海站,北京站,哈尔滨站"
+                }, 
+                new Line
+                {
+                    Id = Guid.Parse("e7ff44ba-c4f9-40c8-a5a0-9ddc557f6093"),
+                    StartTerminal = "上海站",
+                    EndTerminal = "成都站",
+                    StopStation = "上海站,武汉站,重庆站,成都站"
+                },
+                new Line
+                {
+                    Id = Guid.Parse("ee3e7e33-2c85-46c9-98e5-b4bf10f32576"),
+                    StartTerminal = "上海站",
+                    EndTerminal = "广州站",
+                    StopStation = "上海站,武汉站,广州站"
+                },
+
+                new Line
+                {
+                    Id = Guid.Parse("b2187869-2f9f-4ea0-99b4-b8e5c8f34f3d"),
+                    StartTerminal = "哈尔滨站",
+                    EndTerminal = "广州站",
+                    StopStation = "哈尔滨站,北京站,武汉站,广州站"
+                },
+                new Line
+                {
+                    Id = Guid.Parse("ee9e796d-fbfe-42c2-8eb4-b9674206ebc7"),
+                    StartTerminal = "哈尔滨站",
+                    EndTerminal = "上海站",
+                    StopStation = "哈尔滨站,北京站,上海站"
+                },
+                new Line
+                {
+                    Id = Guid.Parse("fec134b0-8623-42db-8602-b64cce2912c2"),
+                    StartTerminal = "哈尔滨站",
+                    EndTerminal = "成都站",
+                    StopStation = "哈尔滨站,北京站,武汉站,重庆站,成都站"
+                },
+                
+                new Line
+                {
+                    Id = Guid.Parse("804edb5e-2bce-43e7-b34b-6db68a9ceb27"),
+                    StartTerminal = "成都站",
+                    EndTerminal = "广州站",
+                    StopStation = "成都站,重庆站,广州站"
+                },
+                new Line
+                {
+                    Id = Guid.Parse("ba2b1c71-bff6-4507-ad15-99c6e13bb5fa"),
+                    StartTerminal = "成都站",
+                    EndTerminal = "上海站",
+                    StopStation = "成都站,重庆站,武汉站,上海站"
+                },
+                new Line
+                {
+                    Id = Guid.Parse("c9c55cc8-2185-40b8-b85b-55c34c918f66"),
+                    StartTerminal = "成都站",
+                    EndTerminal = "哈尔滨站",
+                    StopStation = "成都站,重庆站,武汉站,北京站,哈尔滨"
                 });
         }
     }
