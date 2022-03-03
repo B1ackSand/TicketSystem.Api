@@ -4,7 +4,7 @@ namespace TicketSystem.Api.Entities;
 
 public class Booker
 {
-    public Guid Id { get; set; }
+    public Guid BookerId { get; set; }
     public string BookerWx { get; set; }
     public string UserName { get; set; }
     public string BookerPwd { get; set; }

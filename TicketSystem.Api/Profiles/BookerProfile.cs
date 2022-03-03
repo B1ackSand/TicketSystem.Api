@@ -17,6 +17,7 @@ namespace TicketSystem.Api.Profiles
 
             CreateMap<BookerAddDto, Booker>();
             CreateMap<BookerLoginDto, Booker>();
+            CreateMap<Booker, BookerDto>();
         }
     }
 }

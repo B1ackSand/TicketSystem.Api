@@ -2,7 +2,7 @@
 {
     public class StationOutputDto
     {
-        public Guid Id { get; set; }
+        public Guid StationId { get; set; }
         public string StationName { get; set; }
         public bool IsTerminal { get; set; }
     }

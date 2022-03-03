@@ -10,7 +10,9 @@ namespace TicketSystem.Api.Profiles
         public TrainProfile()
         {
             CreateMap<Train, TrainOutputDto>();
+            CreateMap<Train, TrainDto>();
             CreateMap<TrainAddDto, Train>();
+            CreateMap<TrainUpdateDto, Train>();
         }
     }
 }

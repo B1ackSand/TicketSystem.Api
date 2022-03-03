@@ -1,6 +1,8 @@
-﻿namespace TicketSystem.Api.Models
+﻿using TicketSystem.Api.Entities;
+
+namespace TicketSystem.Api.Models
 {
-    public class TrainOutputDto
+    public class TrainDto
     {
         public Guid TrainId { get; set; }
         public Guid LineId { get; set; }

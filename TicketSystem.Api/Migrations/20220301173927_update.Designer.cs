@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TicketSystem.Api.Data;
 
@@ -10,9 +11,10 @@ using TicketSystem.Api.Data;
 namespace TicketSystem.Api.Migrations
 {
     [DbContext(typeof(TicketDbContext))]
-    partial class TicketDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220301173927_update")]
+    partial class update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,7 +82,7 @@ namespace TicketSystem.Api.Migrations
                             IsDeleted = false,
                             LastName = "黑沙",
                             PhoneNum = "12345678901",
-                            TimeOfRegister = new DateTime(2022, 3, 3, 2, 17, 29, 229, DateTimeKind.Local).AddTicks(2863),
+                            TimeOfRegister = new DateTime(2022, 3, 2, 1, 39, 27, 458, DateTimeKind.Local).AddTicks(5093),
                             UserName = "黑沙"
                         });
                 });
@@ -200,32 +202,6 @@ namespace TicketSystem.Api.Migrations
                             StartTerminal = "成都站",
                             StopStation = "成都站,重庆站,武汉站,北京站,哈尔滨站"
                         });
-                });
-
-            modelBuilder.Entity("TicketSystem.Api.Entities.Order", b =>
-                {
-                    b.Property<Guid>("OrderId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("BookerId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<Guid>("EndTerminalId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("StartTerminalId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("TrainId")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("OrderId");
-
-                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("TicketSystem.Api.Entities.Station", b =>

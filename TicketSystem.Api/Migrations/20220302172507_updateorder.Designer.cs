@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TicketSystem.Api.Data;
 
@@ -10,9 +11,10 @@ using TicketSystem.Api.Data;
 namespace TicketSystem.Api.Migrations
 {
     [DbContext(typeof(TicketDbContext))]
-    partial class TicketDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220302172507_updateorder")]
+    partial class updateorder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,7 +82,7 @@ namespace TicketSystem.Api.Migrations
                             IsDeleted = false,
                             LastName = "黑沙",
                             PhoneNum = "12345678901",
-                            TimeOfRegister = new DateTime(2022, 3, 3, 2, 17, 29, 229, DateTimeKind.Local).AddTicks(2863),
+                            TimeOfRegister = new DateTime(2022, 3, 3, 1, 25, 6, 706, DateTimeKind.Local).AddTicks(1827),
                             UserName = "黑沙"
                         });
                 });
@@ -213,12 +215,6 @@ namespace TicketSystem.Api.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<Guid>("EndTerminalId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("StartTerminalId")
-                        .HasColumnType("char(36)");
 
                     b.Property<Guid>("TrainId")
                         .HasColumnType("char(36)");

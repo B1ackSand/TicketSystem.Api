@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using TicketSystem.Api.DtoParameters;
 using TicketSystem.Api.Entities;
 using TicketSystem.Api.Models;
 using TicketSystem.Api.Services;
@@ -8,12 +9,12 @@ namespace TicketSystem.Api.Controllers;
 
 [ApiController]
 [Route("api/bookers")]
-public class BookerController: ControllerBase
+public class BookerController : ControllerBase
 {
     private readonly ITicketRepository _ticketRepository;
     private readonly IMapper _mapper;
 
-    public BookerController(ITicketRepository ticketRepository,IMapper mapper)
+    public BookerController(ITicketRepository ticketRepository, IMapper mapper)
     {
         _ticketRepository = ticketRepository ?? throw new ArgumentNullException(nameof(ticketRepository));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -39,6 +40,21 @@ public class BookerController: ControllerBase
         return Ok(bookerDto);
     }
 
+    [HttpGet("getAllBookers",Name = nameof(GetBookers))]
+    public async Task<ActionResult<BookerDto>>
+        GetBookers([FromQuery] PageDtoParameters? parameters)
+    {
+        var bookers = await _ticketRepository.GetBookersAsync(parameters);
+        if (bookers == null)
+        {
+            return NotFound();
+        }
+
+        var bookerDto = _mapper.Map<IEnumerable<BookerDto>>(bookers);
+
+        return Ok(bookerDto);
+    }
+
     [HttpPost("login")]
     public async Task<ActionResult<BookerOutputDto>> BookerLogin(BookerLoginDto booker)
     {
@@ -60,7 +76,7 @@ public class BookerController: ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<BookerOutputDto>> 
+    public async Task<ActionResult<BookerOutputDto>>
         CreateBooker(BookerAddDto booker)
     {
         var entity = _mapper.Map<Booker>(booker);
@@ -70,5 +86,51 @@ public class BookerController: ControllerBase
         var dtoToReturn = _mapper.Map<BookerOutputDto>(entity);
 
         return CreatedAtRoute(nameof(GetBooker), dtoToReturn);
+    }
+
+    [HttpPut("updateBooker")]
+    public async Task<ActionResult<BookerAddDto>> UpdateBooker(Guid bookerId,BookerAddDto booker)
+    {
+        var bookerEntity = await _ticketRepository.GetBookerAsync(bookerId);
+
+        if (bookerEntity == null)
+        {
+            //没获取就用put创建资源
+            var bookerToAddEntity = _mapper.Map<Booker>(booker);
+            
+            _ticketRepository.AddBooker(bookerToAddEntity);
+
+            await _ticketRepository.SaveAsync();
+            var dtoToReturn = _mapper.Map<BookerOutputDto>(bookerToAddEntity);
+
+            return CreatedAtRoute(nameof(GetBooker),dtoToReturn);
+        }
+
+        _mapper.Map(booker, bookerEntity);
+        _ticketRepository.UpdateBooker(bookerEntity);
+
+        await _ticketRepository.SaveAsync();
+
+        // 204 无需返回资源（根据实际情况决定）
+        return NoContent();
+    }
+
+
+    [HttpDelete("deleteBooker")]
+    public async Task<IActionResult> DeleteBooker(Guid bookerId)
+    {
+        var bookerEntity = await _ticketRepository.GetBookerAsync(bookerId);
+
+        if (bookerEntity == null)
+        {
+            return NotFound();
+        }
+
+        await _ticketRepository.GetBookerAsync(bookerId);
+        _ticketRepository.DeleteBooker(bookerEntity);
+
+        await _ticketRepository.SaveAsync();
+
+        return NoContent();
     }
 }
