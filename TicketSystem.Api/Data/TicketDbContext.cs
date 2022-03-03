@@ -21,13 +21,15 @@ namespace TicketSystem.Api.Data
         public DbSet<Station>? Stations { get; set; }
         public DbSet<Line>? Lines { get; set; }
 
+        public DbSet<Order>? Orders { get; set; }
+
         //在完成对派生上下文的模型的初始化后，并在该模型已锁定并用于初始化上下文之前，进一步提前配置上下文
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Booker>()
                 .Property(x => x.FirstName).IsRequired().HasMaxLength(20);
             modelBuilder.Entity<Booker>()
-                .Property(x => x.BookerWx).IsRequired().HasMaxLength(100);
+            .Property(x => x.BookerWx).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<Booker>()
                 .Property(x => x.BookerPwd).IsRequired().HasMaxLength(20);
             modelBuilder.Entity<Booker>()
@@ -40,11 +42,13 @@ namespace TicketSystem.Api.Data
 
             modelBuilder.Entity<Train>()
                 .Property(x => x.TrainName).IsRequired().HasMaxLength(5);
+            //唯一索引
+            modelBuilder.Entity<Train>().HasIndex(x => x.TrainName).IsUnique();
             modelBuilder.Entity<Train>()
                 .Property(x => x.TypeOfTrain).IsRequired().HasMaxLength(10);
 
             modelBuilder.Entity<Station>()
-                .Property(x => x.StationName).IsRequired().HasMaxLength(50);
+                .Property(x => x.StationName).IsRequired().HasMaxLength(200);
             modelBuilder.Entity<Station>()
                 .Property(x => x.IsTerminal).IsRequired().HasDefaultValue(false);
 
@@ -52,9 +56,30 @@ namespace TicketSystem.Api.Data
             modelBuilder.Entity<Line>()
                 .Property(x => x.StartTerminal).IsRequired().HasMaxLength(20);
             modelBuilder.Entity<Line>()
-                .Property(x => x.StopStation).IsRequired().HasMaxLength(200);
+                .Property(x => x.StopStation).IsRequired().HasMaxLength(500);
             modelBuilder.Entity<Line>()
                 .Property(x => x.EndTerminal).IsRequired().HasMaxLength(20);
+
+            //定义x对x关系
+            modelBuilder.Entity<Train>()
+                .HasOne(x => x.Line)
+                .WithMany(x => x.Trains)
+                .HasForeignKey(x => x.LineId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Line>()
+                .HasOne(x => x.Station)
+                .WithMany(x => x.Lines)
+                .HasForeignKey(x => x.StartTerminal)
+                .HasPrincipalKey(x => x.StationName);
+
+            //需要手动配
+            modelBuilder.Entity<Line>()
+                .HasOne(x => x.Station)
+                .WithMany(x => x.Lines)
+                .HasForeignKey(x => x.EndTerminal)
+                .HasPrincipalKey(x => x.StationName);
+
 
             //定义x对x关系
             /*modelBuilder.Entity<Employee>()
@@ -67,7 +92,7 @@ namespace TicketSystem.Api.Data
             modelBuilder.Entity<Booker>().HasData(
                 new Booker
                 {
-                    Id = Guid.Parse("99e5b121-ef55-4e35-8d72-89d5622b73d1"),
+                    BookerId = Guid.Parse("99e5b121-ef55-4e35-8d72-89d5622b73d1"),
                     BookerWx = "1",
                     BookerPwd = "123456",
                     UserName = "黑沙",
@@ -83,63 +108,129 @@ namespace TicketSystem.Api.Data
             modelBuilder.Entity<Train>().HasData(
                 new Train
                 {
-                    Id = Guid.Parse("cc2a984d-cd07-4329-9b22-84a5c0185ea7"),
-                    TrainName = "K48",
-                    TypeOfTrain = "K"
+                    TrainId = Guid.Parse("cc2a984d-cd07-4329-9b22-84a5c0185ea7"),
+                    LineId = Guid.Parse("92d0ada0-2cd0-4cc9-b03d-3eccf17ab1a5"),
+                    TrainName = "Z112",
+                    TypeOfTrain = "Z"
                 },
                 new Train
                 {
-                    Id = Guid.Parse("e185afad-aa89-4d4e-bba0-391ce821ae9d"),
-                    TrainName = "K11",
-                    TypeOfTrain = "K"
-                },
-                new Train
-                {
-                    Id = Guid.Parse("99e5b121-ef55-4e35-8d72-89d5622b73db"),
-                    TrainName = "D1868",
+                    TrainId = Guid.Parse("e185afad-aa89-4d4e-bba0-391ce821ae9d"),
+                    LineId = Guid.Parse("18c9ecbb-dc2c-43e8-ba77-9a6cef3ac9bc"),
+                    TrainName = "D1849",
                     TypeOfTrain = "D"
+                },
+                new Train
+                {
+                    TrainId = Guid.Parse("99e5b121-ef55-4e35-8d72-89d5622b73db"),
+                    LineId = Guid.Parse("cbead21b-0681-4a1a-853f-d5b61fd48f54"),
+                    TrainName = "K528",
+                    TypeOfTrain = "K"
+                },
+                new Train
+                {
+                    TrainId = Guid.Parse("40843c33-3050-437d-9749-73c7823be7a1"),
+                    LineId = Guid.Parse("10687777-24de-4a07-a677-633031ae1009"),
+                    TrainName = "G1204",
+                    TypeOfTrain = "G"
+                },
+                new Train
+                {
+                    TrainId = Guid.Parse("146dae5c-7912-45bc-9e5c-60cfc5d77b6a"),
+                    LineId = Guid.Parse("e7ff44ba-c4f9-40c8-a5a0-9ddc557f6093"),
+                    TrainName = "D636",
+                    TypeOfTrain = "D"
+                },
+                new Train
+                {
+                    TrainId = Guid.Parse("f4abb3d9-873b-44ff-90cd-860a36fc259f"),
+                    LineId = Guid.Parse("ee3e7e33-2c85-46c9-98e5-b4bf10f32576"),
+                    TrainName = "K527",
+                    TypeOfTrain = "K"
+                },
+                new Train
+                {
+                    TrainId = Guid.Parse("5d0c96b6-b3eb-497d-8c4c-f12e05fb5e29"),
+                    LineId = Guid.Parse("b2187869-2f9f-4ea0-99b4-b8e5c8f34f3d"),
+                    TrainName = "K728",
+                    TypeOfTrain = "K"
+                },
+                new Train
+                {
+                    TrainId = Guid.Parse("5ee7f9cd-279f-4c5b-83bf-034f6419be7a"),
+                    LineId = Guid.Parse("ee9e796d-fbfe-42c2-8eb4-b9674206ebc7"),
+                    TrainName = "G1202",
+                    TypeOfTrain = "G"
+                },
+                new Train
+                {
+                    TrainId = Guid.Parse("7971f095-300c-4628-b2a8-4e64ba04cbc3"),
+                    LineId = Guid.Parse("fec134b0-8623-42db-8602-b64cce2912c2"),
+                    TrainName = "K548",
+                    TypeOfTrain = "K"
+                },
+                new Train
+                {
+                    TrainId = Guid.Parse("639031e7-cd65-466f-9e8b-f67c14801973"),
+                    LineId = Guid.Parse("804edb5e-2bce-43e7-b34b-6db68a9ceb27"),
+                    TrainName = "K488",
+                    TypeOfTrain = "K"
+                },
+                new Train
+                {
+                    TrainId = Guid.Parse("f5d6e132-c4df-43fe-91c2-39f390dadab7"),
+                    LineId = Guid.Parse("ba2b1c71-bff6-4507-ad15-99c6e13bb5fa"),
+                    TrainName = "G2195",
+                    TypeOfTrain = "G"
+                },
+                new Train
+                {
+                    TrainId = Guid.Parse("88f68a2e-d574-4dd5-b5dd-e5048b82e867"),
+                    LineId = Guid.Parse("c9c55cc8-2185-40b8-b85b-55c34c918f66"),
+                    TrainName = "K546",
+                    TypeOfTrain = "K"
                 });
 
             modelBuilder.Entity<Station>().HasData(
                 new Station
                 {
-                    Id = Guid.Parse("4b501cb3-d168-4cc0-b375-48fb33f318a4"),
+                    StationId = Guid.Parse("4b501cb3-d168-4cc0-b375-48fb33f318a4"),
                     StationName = "广州站",
                     IsTerminal = true
                 },
                 new Station
                 {
-                    Id = Guid.Parse("7eaa532c-1be5-472c-a738-94fd26e5fad6"),
+                    StationId = Guid.Parse("7eaa532c-1be5-472c-a738-94fd26e5fad6"),
                     StationName = "重庆站",
                     IsTerminal = false
                 },
                 new Station
                 {
-                    Id = Guid.Parse("72457e73-ea34-4e02-b575-8d384e82a481"),
+                    StationId = Guid.Parse("72457e73-ea34-4e02-b575-8d384e82a481"),
                     StationName = "北京站",
                     IsTerminal = false
                 },
                 new Station
                 {
-                    Id = Guid.Parse("b091b148-8fc7-4ce5-a6c5-c61dbbb3f91f"),
+                    StationId = Guid.Parse("b091b148-8fc7-4ce5-a6c5-c61dbbb3f91f"),
                     StationName = "上海站",
                     IsTerminal = true
                 },
                 new Station
                 {
-                    Id = Guid.Parse("0846ff99-37ac-4849-804b-1eefac46d651"),
+                    StationId = Guid.Parse("0846ff99-37ac-4849-804b-1eefac46d651"),
                     StationName = "成都站",
                     IsTerminal = true
                 },
                 new Station
                 {
-                    Id = Guid.Parse("07c4638c-48b7-4783-88a5-58f47e2a0458"),
+                    StationId = Guid.Parse("07c4638c-48b7-4783-88a5-58f47e2a0458"),
                     StationName = "哈尔滨站",
                     IsTerminal = true
                 },
                 new Station
                 {
-                    Id = Guid.Parse("09626794-5565-452e-85a4-b924805588ba"),
+                    StationId = Guid.Parse("09626794-5565-452e-85a4-b924805588ba"),
                     StationName = "武汉站",
                     IsTerminal = false
                 });
@@ -147,21 +238,21 @@ namespace TicketSystem.Api.Data
             modelBuilder.Entity<Line>().HasData(
                 new Line
                 {
-                    Id = Guid.Parse("92d0ada0-2cd0-4cc9-b03d-3eccf17ab1a5"),
+                    LineId = Guid.Parse("92d0ada0-2cd0-4cc9-b03d-3eccf17ab1a5"),
                     StartTerminal = "广州站",
                     EndTerminal = "哈尔滨站",
                     StopStation = "广州站,武汉站,北京站,哈尔滨站"
                 },
                 new Line
                 {
-                    Id = Guid.Parse("18c9ecbb-dc2c-43e8-ba77-9a6cef3ac9bc"),
+                    LineId = Guid.Parse("18c9ecbb-dc2c-43e8-ba77-9a6cef3ac9bc"),
                     StartTerminal = "广州站",
                     EndTerminal = "成都站",
                     StopStation = "广州站,重庆站,成都站"
                 },
                 new Line
                 {
-                    Id = Guid.Parse("cbead21b-0681-4a1a-853f-d5b61fd48f54"),
+                    LineId = Guid.Parse("cbead21b-0681-4a1a-853f-d5b61fd48f54"),
                     StartTerminal = "广州站",
                     EndTerminal = "上海站",
                     StopStation = "广州站,武汉站,上海站"
@@ -169,21 +260,21 @@ namespace TicketSystem.Api.Data
 
                 new Line
                 {
-                    Id = Guid.Parse("10687777-24de-4a07-a677-633031ae1009"),
+                    LineId = Guid.Parse("10687777-24de-4a07-a677-633031ae1009"),
                     StartTerminal = "上海站",
                     EndTerminal = "哈尔滨站",
                     StopStation = "上海站,北京站,哈尔滨站"
-                }, 
+                },
                 new Line
                 {
-                    Id = Guid.Parse("e7ff44ba-c4f9-40c8-a5a0-9ddc557f6093"),
+                    LineId = Guid.Parse("e7ff44ba-c4f9-40c8-a5a0-9ddc557f6093"),
                     StartTerminal = "上海站",
                     EndTerminal = "成都站",
                     StopStation = "上海站,武汉站,重庆站,成都站"
                 },
                 new Line
                 {
-                    Id = Guid.Parse("ee3e7e33-2c85-46c9-98e5-b4bf10f32576"),
+                    LineId = Guid.Parse("ee3e7e33-2c85-46c9-98e5-b4bf10f32576"),
                     StartTerminal = "上海站",
                     EndTerminal = "广州站",
                     StopStation = "上海站,武汉站,广州站"
@@ -191,46 +282,46 @@ namespace TicketSystem.Api.Data
 
                 new Line
                 {
-                    Id = Guid.Parse("b2187869-2f9f-4ea0-99b4-b8e5c8f34f3d"),
+                    LineId = Guid.Parse("b2187869-2f9f-4ea0-99b4-b8e5c8f34f3d"),
                     StartTerminal = "哈尔滨站",
                     EndTerminal = "广州站",
                     StopStation = "哈尔滨站,北京站,武汉站,广州站"
                 },
                 new Line
                 {
-                    Id = Guid.Parse("ee9e796d-fbfe-42c2-8eb4-b9674206ebc7"),
+                    LineId = Guid.Parse("ee9e796d-fbfe-42c2-8eb4-b9674206ebc7"),
                     StartTerminal = "哈尔滨站",
                     EndTerminal = "上海站",
                     StopStation = "哈尔滨站,北京站,上海站"
                 },
                 new Line
                 {
-                    Id = Guid.Parse("fec134b0-8623-42db-8602-b64cce2912c2"),
+                    LineId = Guid.Parse("fec134b0-8623-42db-8602-b64cce2912c2"),
                     StartTerminal = "哈尔滨站",
                     EndTerminal = "成都站",
                     StopStation = "哈尔滨站,北京站,武汉站,重庆站,成都站"
                 },
-                
+
                 new Line
                 {
-                    Id = Guid.Parse("804edb5e-2bce-43e7-b34b-6db68a9ceb27"),
+                    LineId = Guid.Parse("804edb5e-2bce-43e7-b34b-6db68a9ceb27"),
                     StartTerminal = "成都站",
                     EndTerminal = "广州站",
                     StopStation = "成都站,重庆站,广州站"
                 },
                 new Line
                 {
-                    Id = Guid.Parse("ba2b1c71-bff6-4507-ad15-99c6e13bb5fa"),
+                    LineId = Guid.Parse("ba2b1c71-bff6-4507-ad15-99c6e13bb5fa"),
                     StartTerminal = "成都站",
                     EndTerminal = "上海站",
                     StopStation = "成都站,重庆站,武汉站,上海站"
                 },
                 new Line
                 {
-                    Id = Guid.Parse("c9c55cc8-2185-40b8-b85b-55c34c918f66"),
+                    LineId = Guid.Parse("c9c55cc8-2185-40b8-b85b-55c34c918f66"),
                     StartTerminal = "成都站",
                     EndTerminal = "哈尔滨站",
-                    StopStation = "成都站,重庆站,武汉站,北京站,哈尔滨"
+                    StopStation = "成都站,重庆站,武汉站,北京站,哈尔滨站"
                 });
         }
     }

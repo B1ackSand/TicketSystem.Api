@@ -64,5 +64,54 @@ public class StationController : ControllerBase
 
         return CreatedAtRoute(nameof(GetStation), dtoToReturn);
     }
+
+    [HttpPut("updateStation")]
+    public async Task<ActionResult<StationAddDto>> UpdateStation(Guid stationId,StationAddDto station)
+    {
+        var stationEntity = await _ticketRepository.GetStationAsync(stationId);
+
+        if (stationEntity == null)
+        {
+            //没获取就用put创建资源
+            var stationToAddEntity = _mapper.Map<Station>(station);
+
+            _ticketRepository.AddStation(stationToAddEntity);
+
+            await _ticketRepository.SaveAsync();
+            var dtoToReturn = _mapper.Map<StationOutputDto>(stationToAddEntity);
+
+            return CreatedAtRoute(nameof(GetStation), new
+            {
+                stationName = dtoToReturn.StationName
+            }, dtoToReturn);
+        }
+
+        _mapper.Map(station, stationEntity);
+        _ticketRepository.UpdateStation(stationEntity);
+
+        await _ticketRepository.SaveAsync();
+
+        // 204 无需返回资源（根据实际情况决定）
+        return NoContent();
+    }
+
+
+    [HttpDelete("deleteStation")]
+    public async Task<IActionResult> DeleteStation(Guid stationId)
+    {
+        var stationEntity = await _ticketRepository.GetStationAsync(stationId);
+
+        if (stationEntity == null)
+        {
+            return NotFound();
+        }
+
+        await _ticketRepository.GetStationAsync(stationId);
+        _ticketRepository.DeleteStation(stationEntity);
+
+        await _ticketRepository.SaveAsync();
+
+        return NoContent();
+    }
 }
 

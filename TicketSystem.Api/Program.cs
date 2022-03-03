@@ -54,6 +54,12 @@ builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// CORS
+builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
+{
+    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+}));
+
 
 //注册数据库上下文
 builder.Services.AddDbContext<TicketDbContext>(options =>
@@ -80,6 +86,11 @@ else
         });
     });
 }
+
+//app CORS
+app.UseCors("corsapp");
+app.UseHttpsRedirection();
+app.UseAuthorization();
 
 //app.UseHttpsRedirection();
 

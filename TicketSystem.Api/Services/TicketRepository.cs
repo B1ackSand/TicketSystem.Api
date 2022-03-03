@@ -3,12 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using TicketSystem.Api.Data;
 using TicketSystem.Api.DtoParameters;
 using TicketSystem.Api.Entities;
+using TicketSystem.Api.Models;
 
 namespace TicketSystem.Api.Services
 {
     public class TicketRepository : ITicketRepository
     {
         private readonly TicketDbContext _context;
+        private ITicketRepository _ticketRepositoryImplementation;
 
         public TicketRepository(TicketDbContext context)
         {
@@ -29,13 +31,39 @@ namespace TicketSystem.Api.Services
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<Booker> GetBookerAsync(Guid bookerId)
+        {
+            if (bookerId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(bookerId));
+            }
+
+            //搜索数据库
+            return await _context.Bookers
+                .Where(x => x.BookerId == bookerId)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<Booker>> GetBookersAsync(PageDtoParameters parameters)
+        {
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            var queryExpression = _context.Bookers
+                .Skip(parameters.PageSize * (parameters.PageNumber - 1)).Take(parameters.PageSize);
+
+            return await queryExpression.ToListAsync();
+        }
+
         public void AddBooker(Booker booker)
         {
             if (booker == null)
             {
                 throw new ArgumentNullException(nameof(booker));
             }
-            booker.Id = Guid.NewGuid();
+            booker.BookerId = Guid.NewGuid();
             booker.TimeOfRegister = DateTime.Now;
 
             _context.Bookers.Add(booker);
@@ -44,7 +72,12 @@ namespace TicketSystem.Api.Services
 
         public void DeleteBooker(Booker booker)
         {
-            //
+            if (booker == null)
+            {
+                throw new ArgumentNullException(nameof(booker));
+            }
+
+            _context.Bookers.Remove(booker);
         }
 
         public void UpdateBooker(Booker? booker)
@@ -60,6 +93,15 @@ namespace TicketSystem.Api.Services
                 throw new ArgumentNullException(nameof(phoneNum));
             }
             return await _context.Bookers.AnyAsync(x => x.PhoneNum == phoneNum);
+        }
+
+        public async Task<bool> BookerExistsAsync(Guid bookerId)
+        {
+            if (bookerId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(bookerId));
+            }
+            return await _context.Bookers.AnyAsync(x => x.BookerId == bookerId);
         }
 
         public async Task<bool> BookerPwdVerify(Booker booker)
@@ -98,6 +140,18 @@ namespace TicketSystem.Api.Services
             return await queryExpression.ToListAsync();
         }
 
+        public async Task<Station> GetStationAsync(Guid stationId)
+        {
+            if (stationId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(stationId));
+            }
+
+            return await _context.Stations
+                .Where(x => x.StationId == stationId)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<Station> GetStationAsync(string stationName)
         {
             if (stationName == null)
@@ -117,14 +171,19 @@ namespace TicketSystem.Api.Services
             {
                 throw new ArgumentNullException(nameof(station));
             }
-            station.Id = Guid.NewGuid();
+            station.StationId = Guid.NewGuid();
 
             _context.Stations.Add(station);
         }
 
         public void DeleteStation(Station station)
         {
-            //
+            if (station == null)
+            {
+                throw new ArgumentNullException(nameof(station));
+            }
+
+            _context.Stations.Remove(station);
         }
 
         public void UpdateStation(Station station)
@@ -143,16 +202,46 @@ namespace TicketSystem.Api.Services
         }
 
         //Train
-        public async Task<Train> GetTrainAsync(string trainName)
+        public async Task<Train> GetTrainDetailAsync(Guid trainId)
         {
-            if (trainName == null)
+            if (trainId == Guid.Empty)
             {
-                throw new ArgumentNullException(nameof(trainName));
+                throw new ArgumentNullException(nameof(trainId));
             }
 
             return await _context.Trains
-                .Where(x => x.TrainName == trainName)
+                .Where(x => x.TrainId == trainId)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<Train> GetTrainAsync(Guid lineId, Guid trainId)
+        {
+            if (lineId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(lineId));
+            }
+
+            if (trainId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(trainId));
+            }
+
+            return await _context.Trains
+                .Where(x => x.LineId == lineId && x.TrainId == trainId)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<Train>> GetTrainsAsync(PageDtoParameters parameters)
+        {
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            var queryExpression = _context.Trains
+                .Skip(parameters.PageSize * (parameters.PageNumber - 1)).Take(parameters.PageSize);
+
+            return await queryExpression.ToListAsync();
         }
 
         public void AddTrain(Train train)
@@ -161,7 +250,24 @@ namespace TicketSystem.Api.Services
             {
                 throw new ArgumentNullException(nameof(train));
             }
-            train.Id = Guid.NewGuid();
+            train.TrainId = Guid.NewGuid();
+
+            _context.Trains.Add(train);
+        }
+
+        public void AddTrain(Guid lineId,Train train)
+        {
+            if (lineId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(lineId));
+            }
+
+            if (train == null)
+            {
+                throw new ArgumentNullException(nameof(train));
+            }
+            train.TrainId = Guid.NewGuid();
+            train.LineId = lineId;
 
             _context.Trains.Add(train);
         }
@@ -172,18 +278,23 @@ namespace TicketSystem.Api.Services
             // ef core 会自动填充代码
         }
 
-        public void DeleteTrainAsync(string trainName)
+        public void DeleteTrain(Train train)
         {
-            //
+            if (train == null)
+            {
+                throw new ArgumentNullException(nameof(train));
+            }
+
+            _context.Trains.Remove(train);
         }
 
-        public async Task<bool> TrainExistsAsync(string trainName)
+        public async Task<bool> TrainExistsAsync(Guid trainId)
         {
-            if (trainName == null)
+            if (trainId == Guid.Empty)
             {
-                throw new ArgumentNullException(nameof(trainName));
+                throw new ArgumentNullException(nameof(trainId));
             }
-            return await _context.Trains.AnyAsync(x => x.TrainName == trainName);
+            return await _context.Trains.AnyAsync(x => x.TrainId == trainId);
         }
 
         //Line
@@ -195,7 +306,7 @@ namespace TicketSystem.Api.Services
             }
 
             return await _context.Lines
-                .Where(x => x.Id == lineId)
+                .Where(x => x.LineId == lineId)
                 .FirstOrDefaultAsync();
         }
 
@@ -206,19 +317,39 @@ namespace TicketSystem.Api.Services
                 throw new ArgumentNullException(nameof(String));
             }
 
-            var items = _context.Lines as IQueryable<Line>;
+            var lines = _context.Lines as IQueryable<Line>;
+            var trains = _context.Trains;
 
             if (!string.IsNullOrWhiteSpace(firstStation) && !string.IsNullOrWhiteSpace(lastStation))
             {
                 firstStation = firstStation.Trim();
                 lastStation = lastStation.Trim();
 
-                items = items.Where(x =>
-                    x.StopStation.Contains(firstStation)
-                    && x.StopStation.Contains(lastStation));
+                lines = lines
+                    .Join(trains, p => p.LineId, d => d.LineId,
+                        (p, d) => new Line
+                        {
+                            LineId = p.LineId,
+                            StartTerminal = p.StartTerminal,
+                            EndTerminal = p.EndTerminal,
+                            StopStation = p.StopStation,
+                            TrainName = d.TrainName
+                        }).Where(x => x.StopStation.Contains(firstStation) && x.StopStation.Contains(lastStation));
+            }
+            return await lines.OrderBy(x => x.StopStation.Length).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Line>> GetLinesAsync(PageDtoParameters parameters)
+        {
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
             }
 
-            return await items.OrderBy(x => x.Id).ToListAsync();
+            var queryExpression = _context.Lines
+                .Skip(parameters.PageSize * (parameters.PageNumber - 1)).Take(parameters.PageSize);
+
+            return await queryExpression.ToListAsync();
         }
 
         public void AddLine(Line line)
@@ -228,18 +359,24 @@ namespace TicketSystem.Api.Services
                 throw new ArgumentException(nameof(line));
             }
 
-            line.Id = Guid.NewGuid();
+            line.LineId = Guid.NewGuid();
             _context.Lines.Add(line);
         }
 
-        public void UpdateLine(Line line)
+        public void UpdateLine(Line? line)
         {
-            throw new NotImplementedException();
+            //_context.Entry(booker).State = EntityState.Modified;
+            // ef core 会自动填充代码
         }
 
-        public void DeleteLineAsync(Guid guid)
+        public void DeleteLine(Line line)
         {
-            throw new NotImplementedException();
+            if (line == null)
+            {
+                throw new ArgumentNullException(nameof(line));
+            }
+
+            _context.Lines.Remove(line);
         }
 
         public async Task<bool> LineExistsAsync(Guid lineId)
@@ -248,7 +385,95 @@ namespace TicketSystem.Api.Services
             {
                 throw new ArgumentNullException(nameof(lineId));
             }
-            return await _context.Lines.AnyAsync(x => x.Id == lineId);
+            return await _context.Lines.AnyAsync(x => x.LineId == lineId);
+        }
+
+
+        //Order
+        public async Task<Order> GetOrderAsync(Guid bookerId, Guid orderId)
+        {
+            if (bookerId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(bookerId));
+            }
+
+            if (orderId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(orderId));
+            }
+
+            //搜索数据库
+            return await _context.Orders
+                .Where(x => x.OrderId == orderId && x.BookerId == bookerId)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<Order>> GetOrdersAsync(PageDtoParameters parameters)
+        {
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            var queryExpression = _context.Orders
+                .Skip(parameters.PageSize * (parameters.PageNumber - 1)).Take(parameters.PageSize);
+
+            return await queryExpression.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Order>> GetOrdersAsync(Guid bookerId)
+        {
+            if (bookerId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(bookerId));
+            }
+
+            var items = _context.Orders as IQueryable<Order>;
+
+            items = items.Where(x => x.BookerId == bookerId);
+
+            return await items.OrderBy(x => x.CreatedDate).ToListAsync();
+        }
+
+        public void AddOrder(Guid bookerId, Order order)
+        {
+            if (bookerId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(bookerId));
+            }
+
+            if (order == null)
+            {
+                throw new ArgumentException(nameof(order));
+            }
+            order.OrderId = Guid.NewGuid();
+            order.BookerId = bookerId;
+            order.CreatedDate = DateTime.Now;
+            _context.Add(order);
+        }
+
+        public async Task<bool> OrderExistsAsync(Guid orderId)
+        {
+            if (orderId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(orderId));
+            }
+            return await _context.Orders.AnyAsync(x => x.OrderId == orderId);
+        }
+
+        public void UpdateOrder(Order order)
+        {
+           
+        }
+
+        public void DeleteOrder(Order order)
+        {
+            if (order == null)
+            {
+                throw new ArgumentNullException(nameof(order));
+            }
+
+            _context.Orders.Remove(order);
         }
 
 

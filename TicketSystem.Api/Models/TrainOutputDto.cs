@@ -2,7 +2,8 @@
 {
     public class TrainOutputDto
     {
-        public Guid Id { get; set; }
+        public Guid TrainId { get; set; }
+        public Guid LineId { get; set; }
         public string TrainName { get; set; }
         public string TypeOfTrain { get; set; }
     }
