@@ -130,7 +130,7 @@ export default {
         this.$message('已是第一页')
       } else {
         this.cur--
-        axios.get('https://localhost:7162/api/lines/getAllLines', {
+        axios.get('https://ticket.blacksand.top/api/lines/getAllLines', {
           params: {
             PageNumber: this.cur,
             PageSize: this.size
@@ -146,7 +146,7 @@ export default {
     next() {
       const that = this
       this.cur++
-      axios.get('https://localhost:7162/api/lines/getAllLines', {
+      axios.get('https://ticket.blacksand.top/api/lines/getAllLines', {
         params: {
           PageNumber: this.cur,
           PageSize: this.size
@@ -166,7 +166,7 @@ export default {
 
     show() {
       const that = this
-      axios.get('https://localhost:7162/api/lines/getAllLines', {
+      axios.get('https://ticket.blacksand.top/api/lines/getAllLines', {
         params: {
           PageNumber: that.cur,
           PageSize: that.size
@@ -198,7 +198,7 @@ export default {
     deleteUser(val) {
       var ID = val
       const that = this
-      axios.delete('https://localhost:7162/api/lines/deleteLine', {
+      axios.delete('https://ticket.blacksand.top/api/lines/deleteLine', {
         params: {
           lineId: ID.lineId
         }
@@ -213,7 +213,7 @@ export default {
 
     addUser() {
       const that = this
-      axios.post('https://localhost:7162/api/lines', {
+      axios.post('https://ticket.blacksand.top/api/lines', {
         startTerminal: that.bookerForm.startTerminal,
         endTerminal: that.bookerForm.endTerminal,
         stopStation: that.bookerForm.stopStation
@@ -233,7 +233,7 @@ export default {
 
     updateData() {
       const that = this
-      axios.put('https://localhost:7162/api/lines/updateLine', {
+      axios.put('https://ticket.blacksand.top/api/lines/updateLine', {
         startTerminal: that.bookerForm.startTerminal,
         endTerminal: that.bookerForm.endTerminal,
         stopStation: that.bookerForm.stopStation

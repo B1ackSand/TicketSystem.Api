@@ -20,6 +20,26 @@ public class TrainController : ControllerBase
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
+    [HttpGet("train")]
+    public async Task<ActionResult<TrainOutputDto>> GetTrain(string trainName)
+    {
+        if (!await _ticketRepository.TrainExistsAsync(trainName))
+        {
+            return NotFound();
+        }
+
+        var train = await _ticketRepository.GetTrainAsync(trainName);
+
+        if (train == null)
+        {
+            return NotFound();
+        }
+
+        var trainDto = _mapper.Map<TrainOutputDto>(train);
+
+        return Ok(trainDto);
+    }
+
     [HttpGet("trains/{trainId}", Name = nameof(GetTrainDetail))]
     public async Task<ActionResult<TrainOutputDto>> GetTrainDetail(Guid trainId)
     {

@@ -4,6 +4,7 @@ namespace TicketSystem.Api.Models;
 
 public class BookerOutputDto
 {
+    public Guid bookerId { get; set; }
     public string UserName { get; set; }
     public string Name { get; set; }
     public Gender Gender { get; set; }

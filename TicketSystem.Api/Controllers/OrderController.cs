@@ -23,7 +23,7 @@ namespace TicketSystem.Api.Controllers
 
 
         [HttpGet("bookers/{bookerId}/orders", Name = nameof(GetAllHistoryOrdersForBooker))]
-        public async Task<ActionResult<IEnumerable<OrderDto>>> GetAllHistoryOrdersForBooker(Guid bookerId)
+        public async Task<ActionResult<IEnumerable<OrderOutputDto>>> GetAllHistoryOrdersForBooker(Guid bookerId)
         {
             if (!await _ticketRepository.BookerExistsAsync(bookerId))
             {
@@ -36,7 +36,7 @@ namespace TicketSystem.Api.Controllers
                 return NotFound();
             }
 
-            var orderDto = _mapper.Map<IEnumerable<OrderDto>>(orders);
+            var orderDto = _mapper.Map<IEnumerable<OrderOutputDto>>(orders);
             return Ok(orderDto);
         }
 

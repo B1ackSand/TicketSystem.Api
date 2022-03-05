@@ -11,8 +11,8 @@ using TicketSystem.Api.Data;
 namespace TicketSystem.Api.Migrations
 {
     [DbContext(typeof(TicketDbContext))]
-    [Migration("20220301134309_UpdateticketDbContext")]
-    partial class UpdateticketDbContext
+    [Migration("20220305080138_updateordertable")]
+    partial class updateordertable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -82,7 +82,7 @@ namespace TicketSystem.Api.Migrations
                             IsDeleted = false,
                             LastName = "黑沙",
                             PhoneNum = "12345678901",
-                            TimeOfRegister = new DateTime(2022, 3, 1, 21, 43, 9, 43, DateTimeKind.Local).AddTicks(2386),
+                            TimeOfRegister = new DateTime(2022, 3, 5, 16, 1, 38, 596, DateTimeKind.Local).AddTicks(9623),
                             UserName = "黑沙"
                         });
                 });
@@ -105,8 +105,11 @@ namespace TicketSystem.Api.Migrations
 
                     b.Property<string>("StopStation")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<string>("TrainName")
+                        .HasColumnType("longtext");
 
                     b.HasKey("LineId");
 
@@ -201,6 +204,44 @@ namespace TicketSystem.Api.Migrations
                         });
                 });
 
+            modelBuilder.Entity("TicketSystem.Api.Entities.Order", b =>
+                {
+                    b.Property<Guid>("OrderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("BookerId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("EndTerminal")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid>("EndTerminalId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("StartTerminal")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid>("StartTerminalId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("TrainId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("TrainName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("OrderId");
+
+                    b.ToTable("Orders");
+                });
+
             modelBuilder.Entity("TicketSystem.Api.Entities.Station", b =>
                 {
                     b.Property<Guid>("StationId")
@@ -214,8 +255,8 @@ namespace TicketSystem.Api.Migrations
 
                     b.Property<string>("StationName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
 
                     b.HasKey("StationId");
 

@@ -201,6 +201,15 @@ namespace TicketSystem.Api.Services
             return await _context.Stations.AnyAsync(x => x.StationName == stationName);
         }
 
+        public async Task<bool> StationExistsAsync(Guid stationId)
+        {
+            if (stationId == Guid.Empty)
+            {
+                throw new ArgumentNullException(nameof(stationId));
+            }
+            return await _context.Stations.AnyAsync(x => x.StationId == stationId);
+        }
+
         //Train
         public async Task<Train> GetTrainDetailAsync(Guid trainId)
         {
@@ -228,6 +237,17 @@ namespace TicketSystem.Api.Services
 
             return await _context.Trains
                 .Where(x => x.LineId == lineId && x.TrainId == trainId)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<Train> GetTrainAsync(string trainName)
+        {
+            if (trainName == null)
+            {
+                throw new ArgumentNullException(nameof(trainName));
+            }
+            return await _context.Trains
+                .Where(x => x.TrainName == trainName)
                 .FirstOrDefaultAsync();
         }
 
@@ -295,6 +315,15 @@ namespace TicketSystem.Api.Services
                 throw new ArgumentNullException(nameof(trainId));
             }
             return await _context.Trains.AnyAsync(x => x.TrainId == trainId);
+        }
+
+        public async Task<bool> TrainExistsAsync(string trainName)
+        {
+            if (trainName == null)
+            {
+                throw new ArgumentNullException(nameof(trainName));
+            }
+            return await _context.Trains.AnyAsync(x => x.TrainName == trainName);
         }
 
         //Line
@@ -448,6 +477,12 @@ namespace TicketSystem.Api.Services
             }
             order.OrderId = Guid.NewGuid();
             order.BookerId = bookerId;
+            var tmp = GetStationAsync(order.StartTerminalId);
+            order.StartTerminal = tmp.Result.StationName;
+            tmp = GetStationAsync(order.EndTerminalId);
+            order.EndTerminal = tmp.Result.StationName;
+            var tmp2 = GetTrainDetailAsync(order.TrainId);
+            order.TrainName = tmp2.Result.TrainName;
             order.CreatedDate = DateTime.Now;
             _context.Add(order);
         }

@@ -129,7 +129,7 @@ export default {
         this.$message('已经是第一页了')
       } else {
         this.cur--
-        axios.get('https://localhost:7162/api/getAllTrains', {
+        axios.get('https://ticket.blacksand.top/api/getAllTrains', {
           params: {
             PageNumber: this.cur,
             PageSize: this.size
@@ -145,7 +145,7 @@ export default {
     next() {
       const that = this
       this.cur++
-      axios.get('https://localhost:7162/api/getAllTrains', {
+      axios.get('https://ticket.blacksand.top/api/getAllTrains', {
         params: {
           PageNumber: this.cur,
           PageSize: this.size
@@ -165,7 +165,7 @@ export default {
 
     show() {
       const that = this
-      axios.get('https://localhost:7162/api/getAllTrains', {
+      axios.get('https://ticket.blacksand.top/api/getAllTrains', {
         params: {
           PageNumber: that.cur,
           PageSize: that.size
@@ -197,7 +197,7 @@ export default {
     deleteUser(val) {
       var ID = val
       const that = this
-      axios.delete('https://localhost:7162/api/trains/deleteTrain', {
+      axios.delete('https://ticket.blacksand.top/api/trains/deleteTrain', {
         params: {
           trainId: ID.trainId
         }
@@ -212,7 +212,7 @@ export default {
 
     addUser() {
       const that = this
-      axios.post('https://localhost:7162/api/lines/' + that.bookerForm.lineId + '/trains', {
+      axios.post('https://ticket.blacksand.top/api/lines/' + that.bookerForm.lineId + '/trains', {
         trainName: that.bookerForm.trainName,
         typeOfTrain: that.bookerForm.typeOfTrain
       }, {
@@ -231,7 +231,7 @@ export default {
 
     updateData() {
       const that = this
-      axios.put('https://localhost:7162/api/trains/updateTrain', {
+      axios.put('https://ticket.blacksand.top/api/trains/updateTrain', {
         trainName: that.bookerForm.trainName,
         typeOfTrain: that.bookerForm.typeOfTrain,
         lineId: that.bookerForm.lineId

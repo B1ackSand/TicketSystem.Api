@@ -25,17 +25,20 @@ namespace TicketSystem.Api.Services
         void DeleteStation(Station station);
         void UpdateStation(Station station);
         Task<bool> StationExistsAsync(string stationName);
+        Task<bool> StationExistsAsync(Guid stationId);
 
 
         //Train
         Task<Train> GetTrainDetailAsync(Guid trainId);
         Task<Train> GetTrainAsync(Guid lineId,Guid trainId);
+        Task<Train> GetTrainAsync(string trainName);
         Task<IEnumerable<Train>> GetTrainsAsync(PageDtoParameters parameters);
         void AddTrain(Guid lineId,Train train);
         void AddTrain(Train train);
         void UpdateTrain(Train train);
         void DeleteTrain(Train train);
         Task<bool> TrainExistsAsync(Guid trainId);
+        Task<bool> TrainExistsAsync(string trainName);
 
 
         //Line

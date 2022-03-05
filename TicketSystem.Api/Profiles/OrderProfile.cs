@@ -9,7 +9,8 @@ namespace TicketSystem.Api.Profiles
         public OrderProfile()
         {
             CreateMap<Order, OrderDto>();
-            CreateMap<OrderAddDto,Order>(); 
+            CreateMap<OrderAddDto,Order>();
+            CreateMap<Order, OrderOutputDto>();
         }
     }
 }

@@ -111,6 +111,7 @@
         prop="bookerPwd"
         label="用户密码"
         width="180px"
+        type="password"
       />
 
       <el-table-column
@@ -188,7 +189,7 @@ export default {
         this.$message('已是第一页')
       } else {
         this.cur--
-        axios.get('https://localhost:7162/api/bookers/getallbookers', {
+        axios.get('https://ticket.blacksand.top/api/bookers/getallbookers', {
           params: {
             PageNumber: this.cur,
             PageSize: this.size
@@ -204,7 +205,7 @@ export default {
     next() {
       const that = this
       this.cur++
-      axios.get('https://localhost:7162/api/bookers/getallbookers', {
+      axios.get('https://ticket.blacksand.top/api/bookers/getallbookers', {
         params: {
           PageNumber: this.cur,
           PageSize: this.size
@@ -224,7 +225,7 @@ export default {
 
     show() {
       const that = this
-      axios.get('https://localhost:7162/api/bookers/getallbookers', {
+      axios.get('https://ticket.blacksand.top/api/bookers/getallbookers', {
         params: {
           PageNumber: that.cur,
           PageSize: that.size
@@ -265,7 +266,7 @@ export default {
     deleteUser(val) {
       var ID = val
       const that = this
-      axios.delete('https://localhost:7162/api/bookers/deleteBooker', {
+      axios.delete('https://ticket.blacksand.top/api/bookers/deleteBooker', {
         params: {
           bookerId: ID
         }
@@ -280,7 +281,7 @@ export default {
 
     addUser() {
       const that = this
-      axios.post('https://localhost:7162/api/bookers', {
+      axios.post('https://ticket.blacksand.top/api/bookers', {
         userName: that.bookerForm.userName,
         bookerWx: '0',
         bookerPwd: that.bookerForm.bookerPwd,
@@ -305,7 +306,7 @@ export default {
 
     updateData() {
       const that = this
-      axios.put('https://localhost:7162/api/bookers/updateBooker', {
+      axios.put('https://ticket.blacksand.top/api/bookers/updateBooker', {
         userName: that.bookerForm.userName,
         bookerWx: '0',
         bookerPwd: that.bookerForm.bookerPwd,
@@ -334,7 +335,7 @@ export default {
 */
     formatGender: function(row, column, cellValue) {
       var ret = '' // 你想在页面展示的值
-      if (cellValue==1) {
+      if (cellValue === 1) {
         ret = '男' // 根据自己的需求设定
       } else {
         ret = '女'

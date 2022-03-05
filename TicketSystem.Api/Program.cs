@@ -7,6 +7,7 @@ using TicketSystem.Api.Services;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
+
 // Add services to the container.
 builder.Services.AddControllers(setup =>
 {
@@ -54,6 +55,8 @@ builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+
 // CORS
 builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
 {
@@ -77,6 +80,8 @@ if (app.Environment.IsDevelopment())
 // 生产环境
 else
 {
+    app.UseSwagger();
+    app.UseSwaggerUI();
     app.UseExceptionHandler(appBuilder =>
     {
         appBuilder.Run(async context =>
@@ -89,7 +94,6 @@ else
 
 //app CORS
 app.UseCors("corsapp");
-app.UseHttpsRedirection();
 app.UseAuthorization();
 
 //app.UseHttpsRedirection();
@@ -105,8 +109,8 @@ using (var scope = app.Services.CreateScope())
     {
         var dbContext = scope.ServiceProvider.GetService<TicketDbContext>();
 
-        dbContext.Database.EnsureDeleted();
-        dbContext.Database.Migrate();
+        // dbContext.Database.EnsureDeleted();
+        // dbContext.Database.Migrate();
     }
     catch (Exception ex)
     {

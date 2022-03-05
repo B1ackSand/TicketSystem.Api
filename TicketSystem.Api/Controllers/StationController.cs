@@ -33,7 +33,26 @@ public class StationController : ControllerBase
         return Ok(stationDtos);
     }
 
-    [HttpGet("stationName",Name = nameof(GetStation))]
+    [HttpGet("station")]
+    public async Task<ActionResult<StationOutputDto>>
+        GetStation(Guid stationId)
+    {
+        if (!await _ticketRepository.StationExistsAsync(stationId))
+        {
+            return NotFound();
+        }
+
+        var station = await _ticketRepository.GetStationAsync(stationId);
+        if (station == null)
+        {
+            return NotFound();
+        }
+
+        var stationDto = _mapper.Map<StationOutputDto>(station);
+        return Ok(stationDto);
+    }
+
+    [HttpGet("stationName")]
     public async Task<ActionResult<StationOutputDto>>
         GetStation(string stationName)
     {

@@ -152,7 +152,7 @@ export default {
         this.$message('已经是第一页了')
       } else {
         this.cur--
-        axios.get('https://localhost:7162/api/getAllOrders', {
+        axios.get('https://ticket.blacksand.top/api/getAllOrders', {
           params: {
             PageNumber: this.cur,
             PageSize: this.size
@@ -168,7 +168,7 @@ export default {
     next() {
       const that = this
       this.cur++
-      axios.get('https://localhost:7162/api/getAllOrders', {
+      axios.get('https://ticket.blacksand.top/api/getAllOrders', {
         params: {
           PageNumber: this.cur,
           PageSize: this.size
@@ -188,7 +188,7 @@ export default {
 
     show() {
       const that = this
-      axios.get('https://localhost:7162/api/getAllOrders', {
+      axios.get('https://ticket.blacksand.top/api/getAllOrders', {
         params: {
           PageNumber: that.cur,
           PageSize: that.size
@@ -225,7 +225,7 @@ export default {
     deleteUser(val) {
       var ID = val
       const that = this
-      axios.delete('https://localhost:7162/api/orders/deleteOrder', {
+      axios.delete('https://ticket.blacksand.top/api/orders/deleteOrder', {
         params: {
           bookerId: ID.bookerId,
           orderId: ID.orderId
@@ -241,7 +241,7 @@ export default {
 
     addUser() {
       const that = this
-      axios.post('https://localhost:7162/api/bookers/' + that.bookerForm.bookerId + '/orders', {
+      axios.post('https://ticket.blacksand.top/api/bookers/' + that.bookerForm.bookerId + '/orders', {
         trainId: that.bookerForm.trainId,
         startTerminalId: that.bookerForm.startTerminalId,
         endTerminalId: that.bookerForm.endTerminalId
@@ -264,7 +264,7 @@ export default {
 
     updateData() {
       const that = this
-      axios.put('https://localhost:7162/api/orders/updateOrder', {
+      axios.put('https://ticket.blacksand.top/api/orders/updateOrder', {
         trainId: that.bookerForm.trainId,
         startTerminalId: that.bookerForm.startTerminalId,
         endTerminalId: that.bookerForm.endTerminalId
