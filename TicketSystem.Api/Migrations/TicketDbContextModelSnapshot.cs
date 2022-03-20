@@ -16,21 +16,21 @@ namespace TicketSystem.Api.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.2")
+                .HasAnnotation("ProductVersion", "6.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("TicketSystem.Api.Entities.Booker", b =>
                 {
-                    b.Property<Guid>("BookerId")
+                    b.Property<int>("BookerId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("int");
 
                     b.Property<string>("BookerPwd")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
 
-                    b.Property<string>("BookerWx")
+                    b.Property<string>("CardId")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
@@ -71,16 +71,16 @@ namespace TicketSystem.Api.Migrations
                     b.HasData(
                         new
                         {
-                            BookerId = new Guid("99e5b121-ef55-4e35-8d72-89d5622b73d1"),
+                            BookerId = 1,
                             BookerPwd = "123456",
-                            BookerWx = "1",
+                            CardId = "453009200001013710",
                             DateOfBirth = new DateTime(2000, 1, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FirstName = "李",
                             Gender = 1,
                             IsDeleted = false,
                             LastName = "黑沙",
                             PhoneNum = "12345678901",
-                            TimeOfRegister = new DateTime(2022, 3, 5, 16, 1, 38, 596, DateTimeKind.Local).AddTicks(9623),
+                            TimeOfRegister = new DateTime(2022, 3, 20, 19, 22, 10, 772, DateTimeKind.Local).AddTicks(7754),
                             UserName = "黑沙"
                         });
                 });
@@ -208,8 +208,8 @@ namespace TicketSystem.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid>("BookerId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("BookerId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime(6)");
@@ -314,6 +314,9 @@ namespace TicketSystem.Api.Migrations
                     b.Property<Guid>("LineId")
                         .HasColumnType("char(36)");
 
+                    b.Property<TimeOnly>("Time")
+                        .HasColumnType("time(6)");
+
                     b.Property<string>("TrainName")
                         .IsRequired()
                         .HasMaxLength(5)
@@ -338,6 +341,7 @@ namespace TicketSystem.Api.Migrations
                         {
                             TrainId = new Guid("cc2a984d-cd07-4329-9b22-84a5c0185ea7"),
                             LineId = new Guid("92d0ada0-2cd0-4cc9-b03d-3eccf17ab1a5"),
+                            Time = new TimeOnly(14, 30, 0),
                             TrainName = "Z112",
                             TypeOfTrain = "Z"
                         },
@@ -345,6 +349,7 @@ namespace TicketSystem.Api.Migrations
                         {
                             TrainId = new Guid("e185afad-aa89-4d4e-bba0-391ce821ae9d"),
                             LineId = new Guid("18c9ecbb-dc2c-43e8-ba77-9a6cef3ac9bc"),
+                            Time = new TimeOnly(12, 30, 0),
                             TrainName = "D1849",
                             TypeOfTrain = "D"
                         },
@@ -352,6 +357,7 @@ namespace TicketSystem.Api.Migrations
                         {
                             TrainId = new Guid("99e5b121-ef55-4e35-8d72-89d5622b73db"),
                             LineId = new Guid("cbead21b-0681-4a1a-853f-d5b61fd48f54"),
+                            Time = new TimeOnly(8, 50, 0),
                             TrainName = "K528",
                             TypeOfTrain = "K"
                         },
@@ -359,6 +365,7 @@ namespace TicketSystem.Api.Migrations
                         {
                             TrainId = new Guid("40843c33-3050-437d-9749-73c7823be7a1"),
                             LineId = new Guid("10687777-24de-4a07-a677-633031ae1009"),
+                            Time = new TimeOnly(19, 12, 0),
                             TrainName = "G1204",
                             TypeOfTrain = "G"
                         },
@@ -366,6 +373,7 @@ namespace TicketSystem.Api.Migrations
                         {
                             TrainId = new Guid("146dae5c-7912-45bc-9e5c-60cfc5d77b6a"),
                             LineId = new Guid("e7ff44ba-c4f9-40c8-a5a0-9ddc557f6093"),
+                            Time = new TimeOnly(11, 45, 0),
                             TrainName = "D636",
                             TypeOfTrain = "D"
                         },
@@ -373,6 +381,7 @@ namespace TicketSystem.Api.Migrations
                         {
                             TrainId = new Guid("f4abb3d9-873b-44ff-90cd-860a36fc259f"),
                             LineId = new Guid("ee3e7e33-2c85-46c9-98e5-b4bf10f32576"),
+                            Time = new TimeOnly(7, 10, 0),
                             TrainName = "K527",
                             TypeOfTrain = "K"
                         },
@@ -380,6 +389,7 @@ namespace TicketSystem.Api.Migrations
                         {
                             TrainId = new Guid("5d0c96b6-b3eb-497d-8c4c-f12e05fb5e29"),
                             LineId = new Guid("b2187869-2f9f-4ea0-99b4-b8e5c8f34f3d"),
+                            Time = new TimeOnly(15, 55, 0),
                             TrainName = "K728",
                             TypeOfTrain = "K"
                         },
@@ -387,6 +397,7 @@ namespace TicketSystem.Api.Migrations
                         {
                             TrainId = new Guid("5ee7f9cd-279f-4c5b-83bf-034f6419be7a"),
                             LineId = new Guid("ee9e796d-fbfe-42c2-8eb4-b9674206ebc7"),
+                            Time = new TimeOnly(14, 3, 0),
                             TrainName = "G1202",
                             TypeOfTrain = "G"
                         },
@@ -394,6 +405,7 @@ namespace TicketSystem.Api.Migrations
                         {
                             TrainId = new Guid("7971f095-300c-4628-b2a8-4e64ba04cbc3"),
                             LineId = new Guid("fec134b0-8623-42db-8602-b64cce2912c2"),
+                            Time = new TimeOnly(8, 20, 0),
                             TrainName = "K548",
                             TypeOfTrain = "K"
                         },
@@ -401,6 +413,7 @@ namespace TicketSystem.Api.Migrations
                         {
                             TrainId = new Guid("639031e7-cd65-466f-9e8b-f67c14801973"),
                             LineId = new Guid("804edb5e-2bce-43e7-b34b-6db68a9ceb27"),
+                            Time = new TimeOnly(10, 10, 0),
                             TrainName = "K488",
                             TypeOfTrain = "K"
                         },
@@ -408,6 +421,7 @@ namespace TicketSystem.Api.Migrations
                         {
                             TrainId = new Guid("f5d6e132-c4df-43fe-91c2-39f390dadab7"),
                             LineId = new Guid("ba2b1c71-bff6-4507-ad15-99c6e13bb5fa"),
+                            Time = new TimeOnly(17, 0, 0),
                             TrainName = "G2195",
                             TypeOfTrain = "G"
                         },
@@ -415,6 +429,7 @@ namespace TicketSystem.Api.Migrations
                         {
                             TrainId = new Guid("88f68a2e-d574-4dd5-b5dd-e5048b82e867"),
                             LineId = new Guid("c9c55cc8-2185-40b8-b85b-55c34c918f66"),
+                            Time = new TimeOnly(18, 40, 0),
                             TrainName = "K546",
                             TypeOfTrain = "K"
                         });

@@ -7,13 +7,13 @@ namespace TicketSystem.Api.Services
     {
         //Booker
         Task<Booker> GetBookerAsync(string phoneNum);
-        Task<Booker> GetBookerAsync(Guid bookerId);
+        Task<Booker> GetBookerAsync(int bookerId);
         Task<IEnumerable<Booker>> GetBookersAsync(PageDtoParameters parameters);
         void AddBooker(Booker booker);
         void DeleteBooker(Booker booker);
         void UpdateBooker(Booker booker);
         Task<bool> BookerExistsAsync(string phoneNum);
-        Task<bool> BookerExistsAsync(Guid bookerId);
+        Task<bool> BookerExistsAsync(int bookerId);
         Task<bool> BookerPwdVerify(Booker booker);
 
 
@@ -51,10 +51,10 @@ namespace TicketSystem.Api.Services
         Task<bool> LineExistsAsync(Guid lineId);
 
         //Order
-        Task<IEnumerable<Order>> GetOrdersAsync(Guid bookerId);
-        Task<Order> GetOrderAsync(Guid bookerId, Guid orderId);
+        Task<IEnumerable<Order>> GetOrdersAsync(int bookerId);
+        Task<Order> GetOrderAsync(int bookerId, Guid orderId);
         Task<IEnumerable<Order>> GetOrdersAsync(PageDtoParameters parameters);
-        void AddOrder(Guid bookerId,Order order);
+        void AddOrder(int bookerId,Order order);
         Task<bool> OrderExistsAsync(Guid orderId);
         void UpdateOrder(Order order);
         void DeleteOrder(Order order);

@@ -1,9 +1,13 @@
-﻿using AutoMapper;
+﻿using System.Text;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 using TicketSystem.Api.DtoParameters;
 using TicketSystem.Api.Entities;
 using TicketSystem.Api.Models;
 using TicketSystem.Api.Services;
+using TicketSystem.Api.Utils;
 
 namespace TicketSystem.Api.Controllers;
 
@@ -13,11 +17,13 @@ public class BookerController : ControllerBase
 {
     private readonly ITicketRepository _ticketRepository;
     private readonly IMapper _mapper;
+    private readonly IDistributedCache _distributedCache;
 
-    public BookerController(ITicketRepository ticketRepository, IMapper mapper)
+    public BookerController(ITicketRepository ticketRepository, IMapper mapper, IDistributedCache distributedCache)
     {
         _ticketRepository = ticketRepository ?? throw new ArgumentNullException(nameof(ticketRepository));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _distributedCache = distributedCache ?? throw new ArgumentNullException(nameof(distributedCache));
     }
 
     [HttpGet(Name = nameof(GetBooker))]
@@ -28,7 +34,7 @@ public class BookerController : ControllerBase
         {
             return NotFound();
         }
-
+         
         var booker = await _ticketRepository.GetBookerAsync(phoneNum);
         if (booker == null)
         {
@@ -37,21 +43,37 @@ public class BookerController : ControllerBase
 
         var bookerDto = _mapper.Map<BookerOutputDto>(booker);
 
+        var redis = new RedisUtil(_distributedCache);
+        redis.RedisSave("Booker_"+bookerDto.bookerId, bookerDto);
+
         return Ok(bookerDto);
     }
 
-    [HttpGet("getAllBookers",Name = nameof(GetBookers))]
-    public async Task<ActionResult<BookerDto>>
-        GetBookers([FromQuery] PageDtoParameters? parameters)
+
+    //redis update
+    [HttpGet("GetAllBookers")]
+    public async Task<ActionResult<BookerDto>> GetAllBookersUsingRedisCache([FromQuery] PageDtoParameters? parameters)
     {
-        var bookers = await _ticketRepository.GetBookersAsync(parameters);
-        if (bookers == null)
+        var cacheKey = "BookerList";
+        IEnumerable<BookerDto> bookerDto;
+        var redisBookerByte = await _distributedCache.GetAsync(cacheKey);
+        if (redisBookerByte != null)
         {
-            return NotFound();
+            var redis = new RedisUtil(_distributedCache);
+            var bookerList = JsonConvert.DeserializeObject<List<Booker>>(redis.RedisRead(redisBookerByte));
+            bookerDto = _mapper.Map<IEnumerable<BookerDto>>(bookerList);
         }
-
-        var bookerDto = _mapper.Map<IEnumerable<BookerDto>>(bookers);
-
+        else
+        {
+            var bookers = await _ticketRepository.GetBookersAsync(parameters);
+            if (bookers == null)
+            {
+                return NotFound();
+            }
+            bookerDto = _mapper.Map<IEnumerable<BookerDto>>(bookers);
+            var redis = new RedisUtil(_distributedCache);
+            redis.RedisSave("BookerList", bookerDto);
+        }
         return Ok(bookerDto);
     }
 
@@ -75,9 +97,10 @@ public class BookerController : ControllerBase
         return Ok(bookerDto);
     }
 
+    //redis update
     [HttpPost]
     public async Task<ActionResult<BookerOutputDto>>
-        CreateBooker(BookerAddDto booker)
+        CreateBookerUsingRedisCache(BookerAddDto booker)
     {
         var entity = _mapper.Map<Booker>(booker);
         _ticketRepository.AddBooker(entity);
@@ -85,11 +108,14 @@ public class BookerController : ControllerBase
 
         var dtoToReturn = _mapper.Map<BookerOutputDto>(entity);
 
+        var redis = new RedisUtil(_distributedCache);
+        redis.RedisSave("Booker_"+dtoToReturn.bookerId, dtoToReturn);
+
         return CreatedAtRoute(nameof(GetBooker), dtoToReturn);
     }
 
     [HttpPut("updateBooker")]
-    public async Task<ActionResult<BookerAddDto>> UpdateBooker(Guid bookerId,BookerAddDto booker)
+    public async Task<ActionResult<BookerAddDto>> UpdateBooker(int bookerId,BookerAddDto booker)
     {
         var bookerEntity = await _ticketRepository.GetBookerAsync(bookerId);
 
@@ -117,7 +143,7 @@ public class BookerController : ControllerBase
 
 
     [HttpDelete("deleteBooker")]
-    public async Task<IActionResult> DeleteBooker(Guid bookerId)
+    public async Task<IActionResult> DeleteBooker(int bookerId)
     {
         var bookerEntity = await _ticketRepository.GetBookerAsync(bookerId);
 

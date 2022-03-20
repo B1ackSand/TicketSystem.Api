@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 using TicketSystem.Api.DtoParameters;
 using TicketSystem.Api.Entities;
 using TicketSystem.Api.Models;
 using TicketSystem.Api.Services;
+using TicketSystem.Api.Utils;
 
 namespace TicketSystem.Api.Controllers
 {
@@ -13,30 +16,51 @@ namespace TicketSystem.Api.Controllers
     {
         private readonly ITicketRepository _ticketRepository;
         private readonly IMapper _mapper;
+        private readonly IDistributedCache _distributedCache;
 
-        public LineController(ITicketRepository ticketRepository, IMapper mapper)
+        public LineController(ITicketRepository ticketRepository, IMapper mapper, IDistributedCache distributedCache)
         {
             _ticketRepository = ticketRepository ?? throw new ArgumentNullException(nameof(ticketRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _distributedCache = distributedCache ?? throw new ArgumentNullException(nameof(distributedCache));
         }
 
+
+        //update redis
         [HttpGet("getLine", Name = nameof(GetLine))]
         public async Task<ActionResult<LineDto>> GetLine(Guid lineId)
         {
-            if (!await _ticketRepository.LineExistsAsync(lineId))
+            var cacheKey = "Line_" + lineId;
+            LineDto lineDto;
+            var redisByte = await _distributedCache.GetAsync(cacheKey);
+            if (redisByte != null)
             {
-                return NotFound();
+                var redis = new RedisUtil(_distributedCache);
+                var lineList = JsonConvert.DeserializeObject<Line>(redis.RedisRead(redisByte));
+                lineDto = _mapper.Map<LineDto>(lineList);
             }
-
-            var line = await _ticketRepository.GetLineAsync(lineId);
-            if (line == null)
+            else
             {
-                return NotFound();
-            }
+                if (!await _ticketRepository.LineExistsAsync(lineId))
+                {
+                    return NotFound();
+                }
 
-            var lineDto = _mapper.Map<LineDto>(line);
+                var line = await _ticketRepository.GetLineAsync(lineId);
+                if (line == null)
+                {
+                    return NotFound();
+                }
+
+                lineDto = _mapper.Map<LineDto>(line);
+                var redis = new RedisUtil(_distributedCache);
+                redis.RedisSave("Line_" + lineId, lineDto);
+            }
             return Ok(lineDto);
         }
+
+
+
 
         [HttpGet("getAllLines", Name = nameof(GetLines))]
         public async Task<ActionResult<LineDto>>
@@ -101,7 +125,7 @@ namespace TicketSystem.Api.Controllers
                 await _ticketRepository.SaveAsync();
                 var dtoToReturn = _mapper.Map<LineOutputDto>(lineToAddEntity);
 
-                return CreatedAtRoute(nameof(GetLine),new
+                return CreatedAtRoute(nameof(GetLine), new
                 {
                     lineId
                 }, dtoToReturn);

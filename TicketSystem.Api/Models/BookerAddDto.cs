@@ -4,7 +4,7 @@ namespace TicketSystem.Api.Models
 {
     public class BookerAddDto
     {
-        public string BookerWx { get; set; }
+        public string CardId { get; set; }
         public string UserName { get; set; }
         public string BookerPwd { get; set; }
         public string FirstName { get; set; }

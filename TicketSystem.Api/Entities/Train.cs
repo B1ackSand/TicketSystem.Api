@@ -8,4 +8,5 @@ public class Train
     public string TrainName { get; set; }
     public string TypeOfTrain { get; set; }
     public Line Line { get; set; }
+    public TimeOnly Time { get; set; }
 }

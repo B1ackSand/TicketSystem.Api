@@ -23,7 +23,7 @@ namespace TicketSystem.Api.Controllers
 
 
         [HttpGet("bookers/{bookerId}/orders", Name = nameof(GetAllHistoryOrdersForBooker))]
-        public async Task<ActionResult<IEnumerable<OrderOutputDto>>> GetAllHistoryOrdersForBooker(Guid bookerId)
+        public async Task<ActionResult<IEnumerable<OrderOutputDto>>> GetAllHistoryOrdersForBooker(int bookerId)
         {
             if (!await _ticketRepository.BookerExistsAsync(bookerId))
             {
@@ -42,7 +42,7 @@ namespace TicketSystem.Api.Controllers
 
         [HttpGet("bookers/{bookerId}/orders/{orderId}",Name = nameof(GetOrderForBooker))]
         // [ActionName("GetOrderForBooker")]
-        public async Task<ActionResult<OrderDto>> GetOrderForBooker(Guid bookerId, Guid orderId)
+        public async Task<ActionResult<OrderDto>> GetOrderForBooker(int bookerId, Guid orderId)
         {
             if (!await _ticketRepository.BookerExistsAsync(bookerId))
             {
@@ -76,7 +76,7 @@ namespace TicketSystem.Api.Controllers
         }
 
         [HttpPost("bookers/{bookerId}/orders")]
-        public async Task<ActionResult<OrderAddDto>> CreateOrderForBooker(Guid bookerId, OrderAddDto order)
+        public async Task<ActionResult<OrderAddDto>> CreateOrderForBooker(int bookerId, OrderAddDto order)
         {
             var entity = _mapper.Map<Order>(order);
             _ticketRepository.AddOrder(bookerId,entity);
@@ -93,7 +93,7 @@ namespace TicketSystem.Api.Controllers
         }
 
         [HttpPut("orders/updateOrder")]
-        public async Task<ActionResult<OrderAddDto>> UpdateLine(Guid orderId,Guid bookerId, OrderAddDto order)
+        public async Task<ActionResult<OrderAddDto>> UpdateLine(Guid orderId,int bookerId, OrderAddDto order)
         {
             var orderEntity = await _ticketRepository.GetOrderAsync(bookerId,orderId);
 
@@ -125,7 +125,7 @@ namespace TicketSystem.Api.Controllers
 
 
         [HttpDelete("orders/deleteOrder")]
-        public async Task<IActionResult> DeleteOrder(Guid bookerId,Guid orderId)
+        public async Task<IActionResult> DeleteOrder(int bookerId,Guid orderId)
         {
             var orderEntity = await _ticketRepository.GetOrderAsync(bookerId,orderId);
 

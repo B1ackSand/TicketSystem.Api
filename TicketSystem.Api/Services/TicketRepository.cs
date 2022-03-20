@@ -31,9 +31,9 @@ namespace TicketSystem.Api.Services
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<Booker> GetBookerAsync(Guid bookerId)
+        public async Task<Booker> GetBookerAsync(int bookerId)
         {
-            if (bookerId == Guid.Empty)
+            if (bookerId == null)
             {
                 throw new ArgumentNullException(nameof(bookerId));
             }
@@ -63,7 +63,6 @@ namespace TicketSystem.Api.Services
             {
                 throw new ArgumentNullException(nameof(booker));
             }
-            booker.BookerId = Guid.NewGuid();
             booker.TimeOfRegister = DateTime.Now;
 
             _context.Bookers.Add(booker);
@@ -95,9 +94,9 @@ namespace TicketSystem.Api.Services
             return await _context.Bookers.AnyAsync(x => x.PhoneNum == phoneNum);
         }
 
-        public async Task<bool> BookerExistsAsync(Guid bookerId)
+        public async Task<bool> BookerExistsAsync(int bookerId)
         {
-            if (bookerId == Guid.Empty)
+            if (bookerId == null)
             {
                 throw new ArgumentNullException(nameof(bookerId));
             }
@@ -112,8 +111,14 @@ namespace TicketSystem.Api.Services
             }
 
             return await _context.Bookers.AnyAsync(
-                x => x.PhoneNum == booker.PhoneNum && x.BookerPwd == booker.BookerPwd);
+                x => x.PhoneNum == booker.PhoneNum
+                     && x.BookerPwd == booker.BookerPwd
+                     && x.CardId.Contains(booker.CardId));
         }
+
+
+
+
 
 
         //Station
@@ -210,6 +215,12 @@ namespace TicketSystem.Api.Services
             return await _context.Stations.AnyAsync(x => x.StationId == stationId);
         }
 
+
+
+
+
+
+
         //Train
         public async Task<Train> GetTrainDetailAsync(Guid trainId)
         {
@@ -275,7 +286,7 @@ namespace TicketSystem.Api.Services
             _context.Trains.Add(train);
         }
 
-        public void AddTrain(Guid lineId,Train train)
+        public void AddTrain(Guid lineId, Train train)
         {
             if (lineId == Guid.Empty)
             {
@@ -325,6 +336,13 @@ namespace TicketSystem.Api.Services
             }
             return await _context.Trains.AnyAsync(x => x.TrainName == trainName);
         }
+
+
+
+
+
+
+
 
         //Line
         public async Task<Line> GetLineAsync(Guid lineId)
@@ -418,10 +436,16 @@ namespace TicketSystem.Api.Services
         }
 
 
+
+
+
+
+
+
         //Order
-        public async Task<Order> GetOrderAsync(Guid bookerId, Guid orderId)
+        public async Task<Order> GetOrderAsync(int bookerId, Guid orderId)
         {
-            if (bookerId == Guid.Empty)
+            if (bookerId == null)
             {
                 throw new ArgumentNullException(nameof(bookerId));
             }
@@ -450,9 +474,9 @@ namespace TicketSystem.Api.Services
             return await queryExpression.ToListAsync();
         }
 
-        public async Task<IEnumerable<Order>> GetOrdersAsync(Guid bookerId)
+        public async Task<IEnumerable<Order>> GetOrdersAsync(int bookerId)
         {
-            if (bookerId == Guid.Empty)
+            if (bookerId == null)
             {
                 throw new ArgumentNullException(nameof(bookerId));
             }
@@ -464,9 +488,9 @@ namespace TicketSystem.Api.Services
             return await items.OrderBy(x => x.CreatedDate).ToListAsync();
         }
 
-        public void AddOrder(Guid bookerId, Order order)
+        public void AddOrder(int bookerId, Order order)
         {
-            if (bookerId == Guid.Empty)
+            if (bookerId == null)
             {
                 throw new ArgumentNullException(nameof(bookerId));
             }
@@ -498,7 +522,7 @@ namespace TicketSystem.Api.Services
 
         public void UpdateOrder(Order order)
         {
-           
+
         }
 
         public void DeleteOrder(Order order)
@@ -510,6 +534,9 @@ namespace TicketSystem.Api.Services
 
             _context.Orders.Remove(order);
         }
+
+
+
 
 
         //存储

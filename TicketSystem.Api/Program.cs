@@ -55,6 +55,12 @@ builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Ìí¼ÓRedis·þÎñ
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = "localhost:6379,password=123456";
+    options.InstanceName = "TicketSystem_";
+});
 
 
 // CORS
