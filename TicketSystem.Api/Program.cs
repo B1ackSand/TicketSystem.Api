@@ -114,9 +114,11 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var dbContext = scope.ServiceProvider.GetService<TicketDbContext>();
-
-        // dbContext.Database.EnsureDeleted();
-        // dbContext.Database.Migrate();
+        if (app.Environment.IsDevelopment())
+        {
+            dbContext.Database.EnsureDeleted();
+            dbContext.Database.Migrate();
+        }
     }
     catch (Exception ex)
     {

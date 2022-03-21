@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Routine.Api.Entities;
 using TicketSystem.Api.Entities;
 
@@ -37,13 +36,11 @@ namespace TicketSystem.Api.Data
                 .Property(x => x.PhoneNum).HasMaxLength(11);
             modelBuilder.Entity<Booker>()
                 .Property(x => x.IsDeleted).IsRequired().HasMaxLength(10);
-            //modelBuilder.Entity<Booker>().Property<bool>("isDeleted");
-            //modelBuilder.Entity<Booker>()
-            //.HasQueryFilter(m => EF.Property<bool>(m, "isDeleted") == false);
 
             modelBuilder.Entity<Train>().Property(x => x.TrainId).ValueGeneratedOnAdd();
             modelBuilder.Entity<Train>()
                 .Property(x => x.TrainName).IsRequired().HasMaxLength(5);
+
             //唯一索引
             modelBuilder.Entity<Train>().HasIndex(x => x.TrainName).IsUnique();
             modelBuilder.Entity<Train>()
@@ -52,7 +49,7 @@ namespace TicketSystem.Api.Data
 
             modelBuilder.Entity<Station>().Property(x => x.StationId).ValueGeneratedOnAdd();
             modelBuilder.Entity<Station>()
-                .Property(x => x.StationName).IsRequired().HasMaxLength(200);
+                .Property(x => x.StationName).IsRequired().HasMaxLength(50);
             modelBuilder.Entity<Station>()
                 .Property(x => x.IsTerminal).IsRequired().HasDefaultValue(false);
 
@@ -71,18 +68,18 @@ namespace TicketSystem.Api.Data
                 .HasForeignKey(x => x.LineId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Line>()
-                .HasOne(x => x.Station)
-                .WithMany(x => x.Lines)
-                .HasForeignKey(x => x.StartTerminal)
-                .HasPrincipalKey(x => x.StationName);
+            // modelBuilder.Entity<Line>()
+            //     .HasOne(x => x.Station)
+            //     .WithMany(x => x.Lines)
+            //     .HasForeignKey(x => x.StartTerminal)
+            //     .OnDelete(DeleteBehavior.Cascade);
 
             //需要手动配
-            modelBuilder.Entity<Line>()
-                .HasOne(x => x.Station)
-                .WithMany(x => x.Lines)
-                .HasForeignKey(x => x.EndTerminal)
-                .HasPrincipalKey(x => x.StationName);
+            // modelBuilder.Entity<Line>()
+            //     .HasOne(x => x.Station)
+            //     .WithMany(x => x.Lines)
+            //     .HasForeignKey(x => x.EndTerminal)
+            //     .OnDelete(DeleteBehavior.Cascade);
 
 
             //定义x对x关系

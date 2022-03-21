@@ -2,8 +2,8 @@
 {
     public class OrderAddDto
     {
-        public Guid TrainId { get; set; }
-        public Guid StartTerminalId { get; set; }
-        public Guid EndTerminalId { get; set; }
+        public int TrainId { get; set; }
+        public int StartTerminalId { get; set; }
+        public int EndTerminalId { get; set; }
     }
 }

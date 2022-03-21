@@ -11,8 +11,8 @@ using TicketSystem.Api.Data;
 namespace TicketSystem.Api.Migrations
 {
     [DbContext(typeof(TicketDbContext))]
-    [Migration("20220321090825_rebuild_table_id")]
-    partial class rebuild_table_id
+    [Migration("20220321215242_update_redis")]
+    partial class update_redis
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -82,7 +82,7 @@ namespace TicketSystem.Api.Migrations
                             IsDeleted = false,
                             LastName = "黑沙",
                             PhoneNum = "13600291522",
-                            TimeOfRegister = new DateTime(2022, 3, 21, 17, 8, 25, 601, DateTimeKind.Local).AddTicks(3866),
+                            TimeOfRegister = new DateTime(2022, 3, 22, 5, 52, 42, 198, DateTimeKind.Local).AddTicks(2232),
                             UserName = "黑沙"
                         });
                 });
@@ -112,8 +112,6 @@ namespace TicketSystem.Api.Migrations
                         .HasColumnType("longtext");
 
                     b.HasKey("LineId");
-
-                    b.HasIndex("EndTerminal");
 
                     b.ToTable("Lines");
 
@@ -258,8 +256,8 @@ namespace TicketSystem.Api.Migrations
 
                     b.Property<string>("StationName")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.HasKey("StationId");
 
@@ -440,18 +438,6 @@ namespace TicketSystem.Api.Migrations
                         });
                 });
 
-            modelBuilder.Entity("TicketSystem.Api.Entities.Line", b =>
-                {
-                    b.HasOne("TicketSystem.Api.Entities.Station", "Station")
-                        .WithMany("Lines")
-                        .HasForeignKey("EndTerminal")
-                        .HasPrincipalKey("StationName")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Station");
-                });
-
             modelBuilder.Entity("TicketSystem.Api.Entities.Train", b =>
                 {
                     b.HasOne("TicketSystem.Api.Entities.Line", "Line")
@@ -466,11 +452,6 @@ namespace TicketSystem.Api.Migrations
             modelBuilder.Entity("TicketSystem.Api.Entities.Line", b =>
                 {
                     b.Navigation("Trains");
-                });
-
-            modelBuilder.Entity("TicketSystem.Api.Entities.Station", b =>
-                {
-                    b.Navigation("Lines");
                 });
 #pragma warning restore 612, 618
         }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TicketSystem.Api.Migrations
 {
-    public partial class rebuild_table_id : Migration
+    public partial class update_redis : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -43,6 +43,27 @@ namespace TicketSystem.Api.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "Lines",
+                columns: table => new
+                {
+                    LineId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    StartTerminal = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    EndTerminal = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    StopStation = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    TrainName = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Lines", x => x.LineId);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "Orders",
                 columns: table => new
                 {
@@ -72,41 +93,13 @@ namespace TicketSystem.Api.Migrations
                 {
                     StationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    StationName = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
+                    StationName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     IsTerminal = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Stations", x => x.StationId);
-                    table.UniqueConstraint("AK_Stations_StationName", x => x.StationName);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "Lines",
-                columns: table => new
-                {
-                    LineId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    StartTerminal = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    EndTerminal = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    StopStation = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    TrainName = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Lines", x => x.LineId);
-                    table.ForeignKey(
-                        name: "FK_Lines_Stations_EndTerminal",
-                        column: x => x.EndTerminal,
-                        principalTable: "Stations",
-                        principalColumn: "StationName",
-                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -138,7 +131,26 @@ namespace TicketSystem.Api.Migrations
             migrationBuilder.InsertData(
                 table: "Bookers",
                 columns: new[] { "BookerId", "BookerPwd", "CardId", "DateOfBirth", "FirstName", "Gender", "IsDeleted", "LastName", "PhoneNum", "TimeOfRegister", "UserName" },
-                values: new object[] { 1, "123456", "453009200001013710", new DateTime(2000, 1, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), "李", 1, false, "黑沙", "13600291522", new DateTime(2022, 3, 21, 17, 8, 25, 601, DateTimeKind.Local).AddTicks(3866), "黑沙" });
+                values: new object[] { 1, "123456", "453009200001013710", new DateTime(2000, 1, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), "李", 1, false, "黑沙", "13600291522", new DateTime(2022, 3, 22, 5, 52, 42, 198, DateTimeKind.Local).AddTicks(2232), "黑沙" });
+
+            migrationBuilder.InsertData(
+                table: "Lines",
+                columns: new[] { "LineId", "EndTerminal", "StartTerminal", "StopStation", "TrainName" },
+                values: new object[,]
+                {
+                    { 1, "哈尔滨站", "广州站", "广州站,武汉站,北京站,哈尔滨站", null },
+                    { 2, "成都站", "广州站", "广州站,重庆站,成都站", null },
+                    { 3, "上海站", "广州站", "广州站,武汉站,上海站", null },
+                    { 4, "哈尔滨站", "上海站", "上海站,北京站,哈尔滨站", null },
+                    { 5, "成都站", "上海站", "上海站,武汉站,重庆站,成都站", null },
+                    { 6, "广州站", "上海站", "上海站,武汉站,广州站", null },
+                    { 7, "广州站", "哈尔滨站", "哈尔滨站,北京站,武汉站,广州站", null },
+                    { 8, "上海站", "哈尔滨站", "哈尔滨站,北京站,上海站", null },
+                    { 9, "成都站", "哈尔滨站", "哈尔滨站,北京站,武汉站,重庆站,成都站", null },
+                    { 10, "广州站", "成都站", "成都站,重庆站,广州站", null },
+                    { 11, "上海站", "成都站", "成都站,重庆站,武汉站,上海站", null },
+                    { 12, "哈尔滨站", "成都站", "成都站,重庆站,武汉站,北京站,哈尔滨站", null }
+                });
 
             migrationBuilder.InsertData(
                 table: "Stations",
@@ -170,25 +182,6 @@ namespace TicketSystem.Api.Migrations
                 values: new object[] { 7, "武汉站" });
 
             migrationBuilder.InsertData(
-                table: "Lines",
-                columns: new[] { "LineId", "EndTerminal", "StartTerminal", "StopStation", "TrainName" },
-                values: new object[,]
-                {
-                    { 1, "哈尔滨站", "广州站", "广州站,武汉站,北京站,哈尔滨站", null },
-                    { 2, "成都站", "广州站", "广州站,重庆站,成都站", null },
-                    { 3, "上海站", "广州站", "广州站,武汉站,上海站", null },
-                    { 4, "哈尔滨站", "上海站", "上海站,北京站,哈尔滨站", null },
-                    { 5, "成都站", "上海站", "上海站,武汉站,重庆站,成都站", null },
-                    { 6, "广州站", "上海站", "上海站,武汉站,广州站", null },
-                    { 7, "广州站", "哈尔滨站", "哈尔滨站,北京站,武汉站,广州站", null },
-                    { 8, "上海站", "哈尔滨站", "哈尔滨站,北京站,上海站", null },
-                    { 9, "成都站", "哈尔滨站", "哈尔滨站,北京站,武汉站,重庆站,成都站", null },
-                    { 10, "广州站", "成都站", "成都站,重庆站,广州站", null },
-                    { 11, "上海站", "成都站", "成都站,重庆站,武汉站,上海站", null },
-                    { 12, "哈尔滨站", "成都站", "成都站,重庆站,武汉站,北京站,哈尔滨站", null }
-                });
-
-            migrationBuilder.InsertData(
                 table: "Trains",
                 columns: new[] { "TrainId", "LineId", "Time", "TrainName", "TypeOfTrain" },
                 values: new object[,]
@@ -206,11 +199,6 @@ namespace TicketSystem.Api.Migrations
                     { 11, 11, new TimeOnly(17, 0, 0), "G2195", "G" },
                     { 12, 12, new TimeOnly(18, 40, 0), "K546", "K" }
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Lines_EndTerminal",
-                table: "Lines",
-                column: "EndTerminal");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Trains_LineId",
@@ -233,13 +221,13 @@ namespace TicketSystem.Api.Migrations
                 name: "Orders");
 
             migrationBuilder.DropTable(
+                name: "Stations");
+
+            migrationBuilder.DropTable(
                 name: "Trains");
 
             migrationBuilder.DropTable(
                 name: "Lines");
-
-            migrationBuilder.DropTable(
-                name: "Stations");
         }
     }
 }

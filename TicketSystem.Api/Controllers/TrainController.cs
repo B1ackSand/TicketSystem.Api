@@ -1,9 +1,13 @@
-﻿using AutoMapper;
+﻿using System.Collections;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 using TicketSystem.Api.DtoParameters;
 using TicketSystem.Api.Entities;
 using TicketSystem.Api.Models;
 using TicketSystem.Api.Services;
+using TicketSystem.Api.Utils;
 
 namespace TicketSystem.Api.Controllers;
 
@@ -13,98 +17,162 @@ public class TrainController : ControllerBase
 {
     private readonly ITicketRepository _ticketRepository;
     private readonly IMapper _mapper;
+    private readonly IDistributedCache _distributedCache;
 
-    public TrainController(ITicketRepository trainRepository, IMapper mapper)
+    public TrainController(ITicketRepository trainRepository, IMapper mapper, IDistributedCache distributedCache)
     {
         _ticketRepository = trainRepository ?? throw new ArgumentNullException(nameof(trainRepository));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _distributedCache = distributedCache ?? throw new ArgumentNullException(nameof(distributedCache));
     }
 
+
+    //redis update
     [HttpGet("train")]
     public async Task<ActionResult<TrainOutputDto>> GetTrain(string trainName)
     {
-        if (!await _ticketRepository.TrainExistsAsync(trainName))
+        var cacheKey = "Train_" + trainName;
+        var redis = new RedisUtil(_distributedCache);
+        TrainOutputDto trainDto;
+        var redisByte = await _distributedCache.GetAsync(cacheKey);
+        if (redisByte != null)
         {
-            return NotFound();
+            var trainList = JsonConvert.DeserializeObject<Train>(redis.RedisRead(redisByte));
+            trainDto = _mapper.Map<TrainOutputDto>(trainList);
         }
-
-        var train = await _ticketRepository.GetTrainAsync(trainName);
-
-        if (train == null)
+        else
         {
-            return NotFound();
-        }
+            if (!await _ticketRepository.TrainExistsAsync(trainName))
+            {
+                return NotFound();
+            }
 
-        var trainDto = _mapper.Map<TrainOutputDto>(train);
+            var train = await _ticketRepository.GetTrainAsync(trainName);
+
+            if (train == null)
+            {
+                return NotFound();
+            }
+
+            trainDto = _mapper.Map<TrainOutputDto>(train);
+            redis.RedisSave("Train_" + trainName, trainDto);
+        }
 
         return Ok(trainDto);
     }
 
+
+    //redis update
     [HttpGet("trains/{trainId}", Name = nameof(GetTrainDetail))]
     public async Task<ActionResult<TrainOutputDto>> GetTrainDetail(int trainId)
     {
-        if (!await _ticketRepository.TrainExistsAsync(trainId))
+        var cacheKey = "Train_" + trainId;
+        var redis = new RedisUtil(_distributedCache);
+        TrainOutputDto trainDto;
+        var redisByte = await _distributedCache.GetAsync(cacheKey);
+
+        if (redisByte != null)
         {
-            return NotFound();
+            var trainList = JsonConvert.DeserializeObject<Train>(redis.RedisRead(redisByte));
+            trainDto = _mapper.Map<TrainOutputDto>(trainList);
         }
-
-        var train = await _ticketRepository.GetTrainDetailAsync(trainId);
-
-        if (train == null)
+        else
         {
-            return NotFound();
-        }
+            if (!await _ticketRepository.TrainExistsAsync(trainId))
+            {
+                return NotFound();
+            }
 
-        var trainDto = _mapper.Map<TrainOutputDto>(train);
+            var train = await _ticketRepository.GetTrainDetailAsync(trainId);
+
+            if (train == null)
+            {
+                return NotFound();
+            }
+
+            trainDto = _mapper.Map<TrainOutputDto>(train);
+            redis.RedisSave("Train_" + trainId, trainDto);
+        }
 
         return Ok(trainDto);
     }
 
 
+    //redis update
     [HttpGet("lines/{lineId}/trains/{trainId}", Name = nameof(GetTrainForLine))]
     public async Task<ActionResult<TrainOutputDto>> GetTrainForLine(int lineId, int trainId)
     {
-        if (!await _ticketRepository.LineExistsAsync(lineId))
+        var cacheKey = "Train_" + trainId;
+        var redis = new RedisUtil(_distributedCache);
+        TrainOutputDto trainDto;
+        var redisByte = await _distributedCache.GetAsync(cacheKey);
+        if (redisByte != null)
         {
-            return NotFound();
+            var trainList = JsonConvert.DeserializeObject<Train>(redis.RedisRead(redisByte));
+            trainDto = _mapper.Map<TrainOutputDto>(trainList);
+        }
+        else
+        {
+            if (!await _ticketRepository.LineExistsAsync(lineId))
+            {
+                return NotFound();
+            }
+
+            if (!await _ticketRepository.TrainExistsAsync(trainId))
+            {
+                return NotFound();
+            }
+
+            var train = await _ticketRepository.GetTrainAsync(lineId, trainId);
+            if (train == null)
+            {
+                return NotFound();
+            }
+            trainDto = _mapper.Map<TrainOutputDto>(train);
+            redis.RedisSave("Train_" + trainId, trainDto);
         }
 
-        if (!await _ticketRepository.TrainExistsAsync(trainId))
-        {
-            return NotFound();
-        }
-
-        var train = await _ticketRepository.GetTrainAsync(lineId, trainId);
-        if (train == null)
-        {
-            return NotFound();
-        }
-        var trainDto = _mapper.Map<TrainOutputDto>(train);
         return Ok(trainDto);
     }
 
+
+    //redis update
     [HttpGet("getAllTrains", Name = nameof(GetTrains))]
     public async Task<ActionResult<BookerOutputDto>>
         GetTrains([FromQuery] PageDtoParameters? parameters)
     {
-        var trains = await _ticketRepository.GetTrainsAsync(parameters);
-        if (trains == null)
+        var cacheKey = "TrainList";
+        IEnumerable<TrainOutputDto> trainsDtos;
+        var redis = new RedisUtil(_distributedCache);
+        var redisByte = await _distributedCache.GetAsync(cacheKey);
+        if (redisByte != null)
         {
-            return NotFound();
+            var trainList = JsonConvert.DeserializeObject<List<Train>>(redis.RedisRead(redisByte));
+            trainsDtos = _mapper.Map<IEnumerable<TrainOutputDto>>(trainList);
+        }
+        else
+        {
+            var trains = await _ticketRepository.GetTrainsAsync(parameters);
+            if (trains == null)
+            {
+                return NotFound();
+            }
+
+            trainsDtos = _mapper.Map<IEnumerable<TrainOutputDto>>(trains);
+            redis.RedisSave(cacheKey, trainsDtos);
         }
 
-        var trainsDto = _mapper.Map<IEnumerable<TrainOutputDto>>(trains);
-
-        return Ok(trainsDto);
+        return Ok(trainsDtos);
     }
 
+    //不需要升级redis
     //需要做长度验证错误处理
     [HttpPost("lines/{lineId}/trains")]
     public async Task<ActionResult<TrainOutputDto>>
-        CreateTrain(int lineId,TrainAddDto train)
+        CreateTrain(int lineId, TrainAddDto train)
     {
         var entity = _mapper.Map<Train>(train);
-        
+
 
         _ticketRepository.AddTrain(lineId, entity);
         await _ticketRepository.SaveAsync();
@@ -118,10 +186,12 @@ public class TrainController : ControllerBase
     }
 
 
+    //redis update
     [HttpPut("trains/updateTrain")]
     public async Task<ActionResult<TrainAddDto>> UpdateTrain(int trainId, TrainUpdateDto train)
     {
         var trainEntity = await _ticketRepository.GetTrainDetailAsync(trainId);
+        var redis = new RedisUtil(_distributedCache);
 
         if (trainEntity == null)
         {
@@ -133,6 +203,8 @@ public class TrainController : ControllerBase
             await _ticketRepository.SaveAsync();
             var dtoToReturn = _mapper.Map<TrainOutputDto>(trainToAddEntity);
 
+            redis.RedisSave("Train_" + trainId, dtoToReturn);
+
             return CreatedAtRoute(nameof(GetTrainDetail), new
             {
                 trainId = dtoToReturn.TrainId
@@ -141,6 +213,9 @@ public class TrainController : ControllerBase
 
         _mapper.Map(train, trainEntity);
         _ticketRepository.UpdateTrain(trainEntity);
+        var redisFlesh = _mapper.Map<TrainOutputDto>(trainEntity);
+
+        redis.RedisSave("Train_" + trainId, redisFlesh);
 
         await _ticketRepository.SaveAsync();
 
@@ -148,7 +223,7 @@ public class TrainController : ControllerBase
         return NoContent();
     }
 
-
+    //redis update
     [HttpDelete("trains/deleteTrain")]
     public async Task<IActionResult> DeleteTrain(int trainId)
     {
@@ -163,6 +238,8 @@ public class TrainController : ControllerBase
         _ticketRepository.DeleteTrain(trainEntity);
 
         await _ticketRepository.SaveAsync();
+        var redis = new RedisUtil(_distributedCache);
+        redis.RedisRemove("TrainList");
 
         return NoContent();
     }

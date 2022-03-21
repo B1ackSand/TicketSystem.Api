@@ -30,21 +30,31 @@ public class BookerController : ControllerBase
     public async Task<ActionResult<BookerOutputDto>>
         GetBooker(string phoneNum)
     {
-        if (!await _ticketRepository.BookerExistsAsync(phoneNum))
-        {
-            return NotFound();
-        }
-         
-        var booker = await _ticketRepository.GetBookerAsync(phoneNum);
-        if (booker == null)
-        {
-            return NotFound();
-        }
-
-        var bookerDto = _mapper.Map<BookerOutputDto>(booker);
-
+        var cacheKey = "Booker_" + phoneNum;
         var redis = new RedisUtil(_distributedCache);
-        redis.RedisSave("Booker_"+bookerDto.bookerId, bookerDto);
+        BookerOutputDto bookerDto;
+        var redisBookerByte = await _distributedCache.GetAsync(cacheKey);
+        if (redisBookerByte != null)
+        {
+            var bookerList = JsonConvert.DeserializeObject<Booker>(redis.RedisRead(redisBookerByte));
+            bookerDto = _mapper.Map<BookerOutputDto>(bookerList);
+        }
+        else
+        {
+            if (!await _ticketRepository.BookerExistsAsync(phoneNum))
+            {
+                return NotFound();
+            }
+
+            var booker = await _ticketRepository.GetBookerAsync(phoneNum);
+            if (booker == null)
+            {
+                return NotFound();
+            }
+
+            bookerDto = _mapper.Map<BookerOutputDto>(booker);
+            redis.RedisSave("Booker_" + bookerDto.PhoneNum, bookerDto);
+        }
 
         return Ok(bookerDto);
     }
@@ -52,14 +62,14 @@ public class BookerController : ControllerBase
 
     //redis update
     [HttpGet("GetAllBookers")]
-    public async Task<ActionResult<BookerDto>> GetAllBookersUsingRedisCache([FromQuery] PageDtoParameters? parameters)
+    public async Task<ActionResult<BookerDto>> GetAllBookers([FromQuery] PageDtoParameters? parameters)
     {
         var cacheKey = "BookerList";
         IEnumerable<BookerDto> bookerDto;
+        var redis = new RedisUtil(_distributedCache);
         var redisBookerByte = await _distributedCache.GetAsync(cacheKey);
         if (redisBookerByte != null)
         {
-            var redis = new RedisUtil(_distributedCache);
             var bookerList = JsonConvert.DeserializeObject<List<Booker>>(redis.RedisRead(redisBookerByte));
             bookerDto = _mapper.Map<IEnumerable<BookerDto>>(bookerList);
         }
@@ -71,8 +81,7 @@ public class BookerController : ControllerBase
                 return NotFound();
             }
             bookerDto = _mapper.Map<IEnumerable<BookerDto>>(bookers);
-            var redis = new RedisUtil(_distributedCache);
-            redis.RedisSave("BookerList", bookerDto);
+            redis.RedisSave(cacheKey, bookerDto);
         }
         return Ok(bookerDto);
     }
@@ -101,7 +110,7 @@ public class BookerController : ControllerBase
     //redis update
     [HttpPost]
     public async Task<ActionResult<BookerOutputDto>>
-        CreateBookerUsingRedisCache(BookerAddDto booker)
+        CreateBooker(BookerAddDto booker)
     {
         var entity = _mapper.Map<Booker>(booker);
         _ticketRepository.AddBooker(entity);
@@ -110,14 +119,14 @@ public class BookerController : ControllerBase
         var dtoToReturn = _mapper.Map<BookerOutputDto>(entity);
 
         var redis = new RedisUtil(_distributedCache);
-        redis.RedisSave("Booker_"+dtoToReturn.bookerId, dtoToReturn);
+        redis.RedisSave("Booker_" + dtoToReturn.bookerId, dtoToReturn);
 
         return CreatedAtRoute(nameof(GetBooker), dtoToReturn);
     }
 
     //redis update
     [HttpPut("updateBooker")]
-    public async Task<ActionResult<BookerAddDto>> UpdateBooker(int bookerId,BookerAddDto booker)
+    public async Task<ActionResult<BookerAddDto>> UpdateBooker(int bookerId, BookerAddDto booker)
     {
         var bookerEntity = await _ticketRepository.GetBookerAsync(bookerId);
         var redis = new RedisUtil(_distributedCache);
@@ -126,7 +135,7 @@ public class BookerController : ControllerBase
         {
             //没获取就用put创建资源
             var bookerToAddEntity = _mapper.Map<Booker>(booker);
-            
+
             _ticketRepository.AddBooker(bookerToAddEntity);
 
             await _ticketRepository.SaveAsync();
@@ -134,14 +143,14 @@ public class BookerController : ControllerBase
 
             redis.RedisSave("Booker_" + bookerId, dtoToReturn);
 
-            return CreatedAtRoute(nameof(GetBooker),dtoToReturn);
+            return CreatedAtRoute(nameof(GetBooker), dtoToReturn);
         }
 
         _mapper.Map(booker, bookerEntity);
         _ticketRepository.UpdateBooker(bookerEntity);
+        var redisFlesh = _mapper.Map<BookerOutputDto>(bookerEntity);
 
-        
-        redis.RedisSave("Booker_" + bookerId, bookerEntity);
+        redis.RedisSave("Booker_" + bookerId, redisFlesh);
 
         await _ticketRepository.SaveAsync();
 

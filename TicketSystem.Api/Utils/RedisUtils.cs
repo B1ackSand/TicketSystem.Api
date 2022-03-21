@@ -34,7 +34,7 @@ namespace TicketSystem.Api.Utils
 
         public void RedisRemove(string cacheKey)
         {
-            _distributedCache.Remove(cacheKey);
+            _distributedCache.RemoveAsync(cacheKey);
         }
     }
 }

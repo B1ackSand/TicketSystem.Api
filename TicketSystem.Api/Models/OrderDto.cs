@@ -4,9 +4,9 @@
     {
         public Guid OrderId { get; set; }
         public int BookerId { get; set; }
-        public Guid TrainId { get; set; }
-        public Guid StartTerminalId { get; set; }
-        public Guid EndTerminalId { get; set; }
+        public int TrainId { get; set; }
+        public int StartTerminalId { get; set; }
+        public int EndTerminalId { get; set; }
         public DateTime CreatedDate { get; set; }
         public double price { get; set; }
     }

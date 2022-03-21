@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 using TicketSystem.Api.DtoParameters;
 using TicketSystem.Api.Entities;
 using TicketSystem.Api.Models;
 using TicketSystem.Api.Services;
+using TicketSystem.Api.Utils;
 
 namespace TicketSystem.Api.Controllers;
 
@@ -13,64 +16,112 @@ public class StationController : ControllerBase
 {
     private readonly ITicketRepository _ticketRepository;
     private readonly IMapper _mapper;
+    private readonly IDistributedCache _distributedCache;
 
-    public StationController(ITicketRepository stationRepository, IMapper mapper)
+    public StationController(ITicketRepository stationRepository, IMapper mapper, IDistributedCache distributedCache)
     {
         _ticketRepository = stationRepository;
         _mapper = mapper;
+        _distributedCache = distributedCache;
     }
 
     //获取所有Stations资源
     //ActionResult 类型表示多种 HTTP 状态代码，是控制器的返回类型
+    //redis update
     [HttpGet]
     public async Task<ActionResult<IEnumerable<StationOutputDto>>>
         GetStations([FromQuery] StationDtoParameters? parameters)
     {
-        var stations = await _ticketRepository.GetStationsAsync(parameters);
-
-        var stationDtos = _mapper.Map<IEnumerable<StationOutputDto>>(stations);
+        var cacheKey = "StationList";
+        var redis = new RedisUtil(_distributedCache);
+        IEnumerable<StationOutputDto> stationDtos;
+        var redisByte = await _distributedCache.GetAsync(cacheKey);
+        if (redisByte != null)
+        {
+            var stationList = JsonConvert.DeserializeObject<List<Station>>(redis.RedisRead(redisByte));
+            stationDtos = _mapper.Map<IEnumerable<StationOutputDto>>(stationList);
+        }
+        else
+        {
+            var stations = await _ticketRepository.GetStationsAsync(parameters);
+            stationDtos = _mapper.Map<IEnumerable<StationOutputDto>>(stations);
+            redis.RedisSave(cacheKey, stationDtos);
+        }
 
         return Ok(stationDtos);
     }
 
+
+    //redis update
     [HttpGet("station")]
     public async Task<ActionResult<StationOutputDto>>
-        GetStation(int stationId)
+        GetStationById(int stationId)
     {
-        if (!await _ticketRepository.StationExistsAsync(stationId))
+        var cacheKey = "Station_" + stationId;
+        var redis = new RedisUtil(_distributedCache);
+        StationOutputDto stationDto;
+        var redisByte = await _distributedCache.GetAsync(cacheKey);
+        if (redisByte != null)
         {
-            return NotFound();
+            var stationList = JsonConvert.DeserializeObject<Station>(redis.RedisRead(redisByte));
+            stationDto = _mapper.Map<StationOutputDto>(stationList);
+        }
+        else
+        {
+            if (!await _ticketRepository.StationExistsAsync(stationId))
+            {
+                return NotFound();
+            }
+
+            var station = await _ticketRepository.GetStationAsync(stationId);
+            if (station == null)
+            {
+                return NotFound();
+            }
+
+            stationDto = _mapper.Map<StationOutputDto>(station);
+            redis.RedisSave(cacheKey, stationDto);
         }
 
-        var station = await _ticketRepository.GetStationAsync(stationId);
-        if (station == null)
-        {
-            return NotFound();
-        }
-
-        var stationDto = _mapper.Map<StationOutputDto>(station);
         return Ok(stationDto);
     }
 
-    [HttpGet("stationName")]
+    //redis update
+    [HttpGet("stationName",Name = "GetStationByName")]
     public async Task<ActionResult<StationOutputDto>>
-        GetStation(string stationName)
+        GetStationByName(string stationName)
     {
-        if (!await _ticketRepository.StationExistsAsync(stationName))
+        var cacheKey = "Station_" + stationName;
+        StationOutputDto stationDto;
+        var redis = new RedisUtil(_distributedCache);
+        var redisByte = await _distributedCache.GetAsync(cacheKey);
+        if (redisByte != null)
         {
-            return NotFound();
+            var stationList = JsonConvert.DeserializeObject<Station>(redis.RedisRead(redisByte));
+            stationDto = _mapper.Map<StationOutputDto>(stationList);
+        }
+        else
+        {
+            if (!await _ticketRepository.StationExistsAsync(stationName))
+            {
+                return NotFound();
+            }
+
+            var station = await _ticketRepository.GetStationAsync(stationName);
+            if (station == null)
+            {
+                return NotFound();
+            }
+
+            stationDto = _mapper.Map<StationOutputDto>(station);
+            redis.RedisSave(cacheKey, stationDto);
         }
 
-        var station = await _ticketRepository.GetStationAsync(stationName);
-        if (station == null)
-        {
-            return NotFound();
-        }
-
-        var stationDto = _mapper.Map<StationOutputDto>(station);
         return Ok(stationDto);
     }
 
+
+    //不需要升级redis
     [HttpPost]
     public async Task<ActionResult<StationOutputDto>>
         CreateStation(StationAddDto station)
@@ -81,13 +132,20 @@ public class StationController : ControllerBase
 
         var dtoToReturn = _mapper.Map<StationOutputDto>(entity);
 
-        return CreatedAtRoute(nameof(GetStation), dtoToReturn);
+        return CreatedAtRoute("GetStationByName",
+            new
+            {
+                stationName = dtoToReturn.StationName
+            }, dtoToReturn);
     }
 
+
+    //redis update
     [HttpPut("updateStation")]
-    public async Task<ActionResult<StationAddDto>> UpdateStation(int stationId,StationAddDto station)
+    public async Task<ActionResult<StationAddDto>> UpdateStation(int stationId, StationAddDto station)
     {
         var stationEntity = await _ticketRepository.GetStationAsync(stationId);
+        var redis = new RedisUtil(_distributedCache);
 
         if (stationEntity == null)
         {
@@ -99,7 +157,9 @@ public class StationController : ControllerBase
             await _ticketRepository.SaveAsync();
             var dtoToReturn = _mapper.Map<StationOutputDto>(stationToAddEntity);
 
-            return CreatedAtRoute(nameof(GetStation), new
+            redis.RedisSave("Station_" + stationId, dtoToReturn);
+
+            return CreatedAtRoute(nameof(GetStationByName), new
             {
                 stationName = dtoToReturn.StationName
             }, dtoToReturn);
@@ -107,14 +167,16 @@ public class StationController : ControllerBase
 
         _mapper.Map(station, stationEntity);
         _ticketRepository.UpdateStation(stationEntity);
-
         await _ticketRepository.SaveAsync();
 
+        var redisFlesh = _mapper.Map<StationOutputDto>(stationEntity);
+        redis.RedisSave("Station_" + stationId, redisFlesh);
         // 204 无需返回资源（根据实际情况决定）
         return NoContent();
     }
 
 
+    //redis update
     [HttpDelete("deleteStation")]
     public async Task<IActionResult> DeleteStation(int stationId)
     {
@@ -127,6 +189,8 @@ public class StationController : ControllerBase
 
         await _ticketRepository.GetStationAsync(stationId);
         _ticketRepository.DeleteStation(stationEntity);
+        var redis = new RedisUtil(_distributedCache);
+        redis.RedisRemove("StationList");
 
         await _ticketRepository.SaveAsync();
 
