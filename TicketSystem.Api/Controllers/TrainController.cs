@@ -101,9 +101,11 @@ public class TrainController : ControllerBase
     //需要做长度验证错误处理
     [HttpPost("lines/{lineId}/trains")]
     public async Task<ActionResult<TrainOutputDto>>
-        CreateTrain(int lineId, TrainAddDto train)
+        CreateTrain(int lineId,TrainAddDto train)
     {
         var entity = _mapper.Map<Train>(train);
+        
+
         _ticketRepository.AddTrain(lineId, entity);
         await _ticketRepository.SaveAsync();
 

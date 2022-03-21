@@ -120,58 +120,6 @@ export const constantRoutes = [
     ]
   },
 
-  /* {
-    path: '/Table',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: '题库详情', icon: 'table' }
-      }
-    ]
-  },
-
-  {
-    path: '/add',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Add',
-        component: () => import('@/views/add/index'),
-        meta: { title: '添加新题目', icon: 'form' }
-      }
-    ]
-  },
-
-  {
-    path: '/manage',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Manage',
-        component: () => import('@/views/manage/index'),
-        meta: { title: '题库管理', icon: 'user' }
-      }
-    ]
-  },
-
-  {
-    path: '/level',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Level',
-        component: () => import('@/views/level/index'),
-        meta: { title: '闯关页面', icon: 'form' }
-      }
-    ]
-  }, */
-
   {
     path: 'external-link',
     component: Layout,

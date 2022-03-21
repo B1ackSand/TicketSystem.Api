@@ -25,6 +25,9 @@
         <el-form-item label="性别" prop="gender">
           <el-input v-model="bookerForm.gender" />
         </el-form-item>
+        <el-form-item label="身份证号" prop="cardId">
+          <el-input v-model="bookerForm.cardId" />
+        </el-form-item>
         <el-form-item label="手机号码" prop="phoneNum">
           <el-input v-model="bookerForm.phoneNum" />
         </el-form-item>
@@ -62,6 +65,9 @@
         </el-form-item>
         <el-form-item label="性别" prop="gender">
           <el-input v-model="bookerForm.gender" />
+        </el-form-item>
+        <el-form-item label="身份证号" prop="cardId">
+          <el-input v-model="bookerForm.cardId" />
         </el-form-item>
         <el-form-item label="手机号码" prop="phoneNum">
           <el-input v-model="bookerForm.phoneNum" />
@@ -119,6 +125,12 @@
         label="性别"
         width="100px"
         :formatter="formatGender"
+      />d
+
+      <el-table-column
+        prop="cardId"
+        label="身份证号"
+        width="200px"
       />
 
       <el-table-column
@@ -164,7 +176,7 @@ export default {
       cur: 1,
       size: 10,
       bookerForm: {
-        bookerWx: '0',
+        cardId: '',
         userName: '',
         bookerPwd: '',
         firstName: '',
@@ -238,7 +250,7 @@ export default {
 
     cancelAddUser() {
       this.bookerForm = {
-        bookerWx: '0',
+        cardId: '',
         userName: '',
         bookerPwd: '',
         firstName: '',
@@ -252,6 +264,7 @@ export default {
     modifyUser(val) {
       this.bookerForm = {
         bookerId: val.bookerId,
+        cardId: val.cardId,
         userName: val.userName,
         bookerPwd: val.bookerPwd,
         firstName: val.firstName,
@@ -283,7 +296,7 @@ export default {
       const that = this
       axios.post('https://ticket.blacksand.top/api/bookers', {
         userName: that.bookerForm.userName,
-        bookerWx: '0',
+        cardId: that.bookerForm.cardId,
         bookerPwd: that.bookerForm.bookerPwd,
         firstName: that.bookerForm.firstName,
         lastName: that.bookerForm.lastName,
@@ -308,7 +321,7 @@ export default {
       const that = this
       axios.put('https://ticket.blacksand.top/api/bookers/updateBooker', {
         userName: that.bookerForm.userName,
-        bookerWx: '0',
+        cardId: that.bookerForm.cardId,
         bookerPwd: that.bookerForm.bookerPwd,
         firstName: that.bookerForm.firstName,
         lastName: that.bookerForm.lastName,

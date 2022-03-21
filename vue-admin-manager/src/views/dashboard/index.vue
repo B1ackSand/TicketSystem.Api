@@ -1,6 +1,7 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">name: {{ name }}</div>
+    <div class="dashboard-text">当前用户： {{ name }}</div>
+    <div class="dashboard-text">火车站售票管理系统</div>
   </div>
 </template>
 

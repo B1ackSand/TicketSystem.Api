@@ -286,7 +286,7 @@ namespace TicketSystem.Api.Services
             _context.Trains.Add(train);
         }
 
-        public void AddTrain(int lineId, Train train)
+        public void AddTrain(int lineId,Train train)
         {
             if (lineId == null)
             {
@@ -299,6 +299,7 @@ namespace TicketSystem.Api.Services
             }
             // train.TrainId = Guid.NewGuid();
             train.LineId = lineId;
+
 
             _context.Trains.Add(train);
         }

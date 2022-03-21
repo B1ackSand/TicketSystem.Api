@@ -20,6 +20,10 @@
         <el-form-item prop="typeOfTrain" label="列车类型">
           <el-input v-model="bookerForm.typeOfTrain" />
         </el-form-item>
+
+        <el-form-item prop="typeOfTrain" label="各站点始发时间">
+          <el-input v-model="bookerForm.time" />
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">返回</el-button>
@@ -46,6 +50,10 @@
 
         <el-form-item prop="typeOfTrain" label="列车类型">
           <el-input v-model="bookerForm.typeOfTrain" />
+        </el-form-item>
+
+        <el-form-item prop="time" label="各站点始发时间">
+          <el-input v-model="bookerForm.time" />
         </el-form-item>
 
       </el-form>
@@ -81,7 +89,14 @@
       <el-table-column
         prop="typeOfTrain"
         label="列车类型"
-        width="680px"
+        width="120px"
+      />
+
+      <el-table-column
+        prop="time"
+        label="各站点始发时间"
+        width="570px"
+        :formatter="formatTime"
       />
 
       <el-table-column label="修改操作" align="center" min-width="150" width="200">
@@ -111,7 +126,8 @@ export default {
         trainId: '',
         lineId: '',
         trainName: '',
-        typeOfTrain: ''
+        typeOfTrain: '',
+        time: []
       },
       dialogFormVisible: false,
       dialogAddVisible: false,
@@ -181,7 +197,8 @@ export default {
         trainId: '',
         lineId: '',
         trainName: '',
-        typeOfTrain: ''
+        typeOfTrain: '',
+        time: ''
       }
     },
 
@@ -190,7 +207,8 @@ export default {
         trainId: val.trainId,
         lineId: val.lineId,
         trainName: val.trainName,
-        typeOfTrain: val.typeOfTrain
+        typeOfTrain: val.typeOfTrain,
+        time: val.time.hour + ':' + val.time.minute
       }
     },
 
@@ -250,6 +268,12 @@ export default {
         }
       }
       )
+    },
+
+    formatTime: function(row, column, object) {
+      var ret = '' // 你想在页面展示的值
+      ret = object.hour + ':' + object.minute
+      return ret
     }
   }
 }

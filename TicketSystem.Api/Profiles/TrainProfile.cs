@@ -11,8 +11,12 @@ namespace TicketSystem.Api.Profiles
         {
             CreateMap<Train, TrainOutputDto>();
             CreateMap<Train, TrainDto>();
-            CreateMap<TrainAddDto, Train>();
-            CreateMap<TrainUpdateDto, Train>();
+            CreateMap<TrainAddDto, Train>()
+                .ForMember(dest => dest.Time,
+                    opt => opt.MapFrom(src=>TimeOnly.Parse(src.Time)));
+            CreateMap<TrainUpdateDto, Train>()
+                .ForMember(dest => dest.Time,
+                    opt => opt.MapFrom(src => TimeOnly.Parse(src.Time))); ;
         }
     }
 }
