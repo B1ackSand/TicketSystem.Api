@@ -41,7 +41,6 @@ namespace TicketSystem.Api.Controllers
         }
 
         [HttpGet("bookers/{bookerId}/orders/{orderId}",Name = nameof(GetOrderForBooker))]
-        // [ActionName("GetOrderForBooker")]
         public async Task<ActionResult<OrderDto>> GetOrderForBooker(int bookerId, Guid orderId)
         {
             if (!await _ticketRepository.BookerExistsAsync(bookerId))

@@ -31,5 +31,10 @@ namespace TicketSystem.Api.Utils
         {
             return Encoding.UTF8.GetString(redisByte);
         }
+
+        public void RedisRemove(string cacheKey)
+        {
+            _distributedCache.Remove(cacheKey);
+        }
     }
 }

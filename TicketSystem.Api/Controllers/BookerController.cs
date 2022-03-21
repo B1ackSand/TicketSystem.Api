@@ -25,6 +25,7 @@ public class BookerController : ControllerBase
         _distributedCache = distributedCache ?? throw new ArgumentNullException(nameof(distributedCache));
     }
 
+    //redis update
     [HttpGet(Name = nameof(GetBooker))]
     public async Task<ActionResult<BookerOutputDto>>
         GetBooker(string phoneNum)
@@ -76,6 +77,7 @@ public class BookerController : ControllerBase
         return Ok(bookerDto);
     }
 
+    //不需要升级
     [HttpPost("login")]
     public async Task<ActionResult<BookerOutputDto>> BookerLogin(BookerLoginDto booker)
     {
@@ -113,10 +115,12 @@ public class BookerController : ControllerBase
         return CreatedAtRoute(nameof(GetBooker), dtoToReturn);
     }
 
+    //redis update
     [HttpPut("updateBooker")]
     public async Task<ActionResult<BookerAddDto>> UpdateBooker(int bookerId,BookerAddDto booker)
     {
         var bookerEntity = await _ticketRepository.GetBookerAsync(bookerId);
+        var redis = new RedisUtil(_distributedCache);
 
         if (bookerEntity == null)
         {
@@ -128,11 +132,16 @@ public class BookerController : ControllerBase
             await _ticketRepository.SaveAsync();
             var dtoToReturn = _mapper.Map<BookerOutputDto>(bookerToAddEntity);
 
+            redis.RedisSave("Booker_" + bookerId, dtoToReturn);
+
             return CreatedAtRoute(nameof(GetBooker),dtoToReturn);
         }
 
         _mapper.Map(booker, bookerEntity);
         _ticketRepository.UpdateBooker(bookerEntity);
+
+        
+        redis.RedisSave("Booker_" + bookerId, bookerEntity);
 
         await _ticketRepository.SaveAsync();
 
@@ -141,6 +150,7 @@ public class BookerController : ControllerBase
     }
 
 
+    //redis update
     [HttpDelete("deleteBooker")]
     public async Task<IActionResult> DeleteBooker(int bookerId)
     {
@@ -155,6 +165,8 @@ public class BookerController : ControllerBase
         _ticketRepository.DeleteBooker(bookerEntity);
 
         await _ticketRepository.SaveAsync();
+        var redis = new RedisUtil(_distributedCache);
+        redis.RedisRemove("BookerList");
 
         return NoContent();
     }
