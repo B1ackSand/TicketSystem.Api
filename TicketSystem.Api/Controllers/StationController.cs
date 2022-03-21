@@ -35,7 +35,7 @@ public class StationController : ControllerBase
 
     [HttpGet("station")]
     public async Task<ActionResult<StationOutputDto>>
-        GetStation(Guid stationId)
+        GetStation(int stationId)
     {
         if (!await _ticketRepository.StationExistsAsync(stationId))
         {
@@ -85,7 +85,7 @@ public class StationController : ControllerBase
     }
 
     [HttpPut("updateStation")]
-    public async Task<ActionResult<StationAddDto>> UpdateStation(Guid stationId,StationAddDto station)
+    public async Task<ActionResult<StationAddDto>> UpdateStation(int stationId,StationAddDto station)
     {
         var stationEntity = await _ticketRepository.GetStationAsync(stationId);
 
@@ -116,7 +116,7 @@ public class StationController : ControllerBase
 
 
     [HttpDelete("deleteStation")]
-    public async Task<IActionResult> DeleteStation(Guid stationId)
+    public async Task<IActionResult> DeleteStation(int stationId)
     {
         var stationEntity = await _ticketRepository.GetStationAsync(stationId);
 

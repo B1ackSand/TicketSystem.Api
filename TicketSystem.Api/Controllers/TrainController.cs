@@ -41,7 +41,7 @@ public class TrainController : ControllerBase
     }
 
     [HttpGet("trains/{trainId}", Name = nameof(GetTrainDetail))]
-    public async Task<ActionResult<TrainOutputDto>> GetTrainDetail(Guid trainId)
+    public async Task<ActionResult<TrainOutputDto>> GetTrainDetail(int trainId)
     {
         if (!await _ticketRepository.TrainExistsAsync(trainId))
         {
@@ -62,7 +62,7 @@ public class TrainController : ControllerBase
 
 
     [HttpGet("lines/{lineId}/trains/{trainId}", Name = nameof(GetTrainForLine))]
-    public async Task<ActionResult<TrainOutputDto>> GetTrainForLine(Guid lineId, Guid trainId)
+    public async Task<ActionResult<TrainOutputDto>> GetTrainForLine(int lineId, int trainId)
     {
         if (!await _ticketRepository.LineExistsAsync(lineId))
         {
@@ -101,7 +101,7 @@ public class TrainController : ControllerBase
     //需要做长度验证错误处理
     [HttpPost("lines/{lineId}/trains")]
     public async Task<ActionResult<TrainOutputDto>>
-        CreateTrain(Guid lineId, TrainAddDto train)
+        CreateTrain(int lineId, TrainAddDto train)
     {
         var entity = _mapper.Map<Train>(train);
         _ticketRepository.AddTrain(lineId, entity);
@@ -117,7 +117,7 @@ public class TrainController : ControllerBase
 
 
     [HttpPut("trains/updateTrain")]
-    public async Task<ActionResult<TrainAddDto>> UpdateTrain(Guid trainId, TrainUpdateDto train)
+    public async Task<ActionResult<TrainAddDto>> UpdateTrain(int trainId, TrainUpdateDto train)
     {
         var trainEntity = await _ticketRepository.GetTrainDetailAsync(trainId);
 
@@ -148,7 +148,7 @@ public class TrainController : ControllerBase
 
 
     [HttpDelete("trains/deleteTrain")]
-    public async Task<IActionResult> DeleteTrain(Guid trainId)
+    public async Task<IActionResult> DeleteTrain(int trainId)
     {
         var trainEntity = await _ticketRepository.GetTrainDetailAsync(trainId);
 

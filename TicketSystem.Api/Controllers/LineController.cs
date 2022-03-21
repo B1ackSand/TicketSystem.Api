@@ -28,7 +28,7 @@ namespace TicketSystem.Api.Controllers
 
         //update redis
         [HttpGet("getLine", Name = nameof(GetLine))]
-        public async Task<ActionResult<LineDto>> GetLine(Guid lineId)
+        public async Task<ActionResult<LineDto>> GetLine(int lineId)
         {
             var cacheKey = "Line_" + lineId;
             LineDto lineDto;
@@ -111,7 +111,7 @@ namespace TicketSystem.Api.Controllers
         }
 
         [HttpPut("updateLine")]
-        public async Task<ActionResult<LineAddDto>> UpdateLine(Guid lineId, LineAddDto line)
+        public async Task<ActionResult<LineAddDto>> UpdateLine(int lineId, LineAddDto line)
         {
             var lineEntity = await _ticketRepository.GetLineAsync(lineId);
 
@@ -142,7 +142,7 @@ namespace TicketSystem.Api.Controllers
 
 
         [HttpDelete("deleteLine")]
-        public async Task<IActionResult> DeleteLine(Guid lineId)
+        public async Task<IActionResult> DeleteLine(int lineId)
         {
             var lineEntity = await _ticketRepository.GetLineAsync(lineId);
 

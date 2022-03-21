@@ -145,9 +145,9 @@ namespace TicketSystem.Api.Services
             return await queryExpression.ToListAsync();
         }
 
-        public async Task<Station> GetStationAsync(Guid stationId)
+        public async Task<Station> GetStationAsync(int stationId)
         {
-            if (stationId == Guid.Empty)
+            if (stationId ==null)
             {
                 throw new ArgumentNullException(nameof(stationId));
             }
@@ -176,7 +176,7 @@ namespace TicketSystem.Api.Services
             {
                 throw new ArgumentNullException(nameof(station));
             }
-            station.StationId = Guid.NewGuid();
+            // station.StationId = Guid.NewGuid();
 
             _context.Stations.Add(station);
         }
@@ -206,9 +206,9 @@ namespace TicketSystem.Api.Services
             return await _context.Stations.AnyAsync(x => x.StationName == stationName);
         }
 
-        public async Task<bool> StationExistsAsync(Guid stationId)
+        public async Task<bool> StationExistsAsync(int stationId)
         {
-            if (stationId == Guid.Empty)
+            if (stationId == null)
             {
                 throw new ArgumentNullException(nameof(stationId));
             }
@@ -222,9 +222,9 @@ namespace TicketSystem.Api.Services
 
 
         //Train
-        public async Task<Train> GetTrainDetailAsync(Guid trainId)
+        public async Task<Train> GetTrainDetailAsync(int trainId)
         {
-            if (trainId == Guid.Empty)
+            if (trainId == null)
             {
                 throw new ArgumentNullException(nameof(trainId));
             }
@@ -234,14 +234,14 @@ namespace TicketSystem.Api.Services
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<Train> GetTrainAsync(Guid lineId, Guid trainId)
+        public async Task<Train> GetTrainAsync(int lineId, int trainId)
         {
-            if (lineId == Guid.Empty)
+            if (lineId == null)
             {
                 throw new ArgumentNullException(nameof(lineId));
             }
 
-            if (trainId == Guid.Empty)
+            if (trainId == null)
             {
                 throw new ArgumentNullException(nameof(trainId));
             }
@@ -281,14 +281,14 @@ namespace TicketSystem.Api.Services
             {
                 throw new ArgumentNullException(nameof(train));
             }
-            train.TrainId = Guid.NewGuid();
+            // train.TrainId = Guid.NewGuid();
 
             _context.Trains.Add(train);
         }
 
-        public void AddTrain(Guid lineId, Train train)
+        public void AddTrain(int lineId, Train train)
         {
-            if (lineId == Guid.Empty)
+            if (lineId == null)
             {
                 throw new ArgumentNullException(nameof(lineId));
             }
@@ -297,7 +297,7 @@ namespace TicketSystem.Api.Services
             {
                 throw new ArgumentNullException(nameof(train));
             }
-            train.TrainId = Guid.NewGuid();
+            // train.TrainId = Guid.NewGuid();
             train.LineId = lineId;
 
             _context.Trains.Add(train);
@@ -319,9 +319,9 @@ namespace TicketSystem.Api.Services
             _context.Trains.Remove(train);
         }
 
-        public async Task<bool> TrainExistsAsync(Guid trainId)
+        public async Task<bool> TrainExistsAsync(int trainId)
         {
-            if (trainId == Guid.Empty)
+            if (trainId == null)
             {
                 throw new ArgumentNullException(nameof(trainId));
             }
@@ -345,9 +345,9 @@ namespace TicketSystem.Api.Services
 
 
         //Line
-        public async Task<Line> GetLineAsync(Guid lineId)
+        public async Task<Line> GetLineAsync(int lineId)
         {
-            if (lineId == Guid.Empty)
+            if (lineId == null)
             {
                 throw new ArgumentNullException(nameof(lineId));
             }
@@ -406,7 +406,7 @@ namespace TicketSystem.Api.Services
                 throw new ArgumentException(nameof(line));
             }
 
-            line.LineId = Guid.NewGuid();
+            // line.LineId = Guid.NewGuid();
             _context.Lines.Add(line);
         }
 
@@ -426,9 +426,9 @@ namespace TicketSystem.Api.Services
             _context.Lines.Remove(line);
         }
 
-        public async Task<bool> LineExistsAsync(Guid lineId)
+        public async Task<bool> LineExistsAsync(int lineId)
         {
-            if (lineId == Guid.Empty)
+            if (lineId == null)
             {
                 throw new ArgumentNullException(nameof(lineId));
             }
@@ -539,7 +539,7 @@ namespace TicketSystem.Api.Services
 
 
 
-        //存储
+        //存储至数据库
         public async Task<bool> SaveAsync()
         {
             return await _context.SaveChangesAsync() >= 0;

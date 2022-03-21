@@ -2,8 +2,8 @@
 {
     public class TrainOutputDto
     {
-        public Guid TrainId { get; set; }
-        public Guid LineId { get; set; }
+        public int TrainId { get; set; }
+        public int LineId { get; set; }
         public string TrainName { get; set; }
         public string TypeOfTrain { get; set; }
         public TimeOnly Time { get; set; }

@@ -2,6 +2,6 @@
 {
     public class TrainUpdateDto:TrainAddDto
     {
-        public Guid LineId { get; set; }
+        public int LineId { get; set; }
     }
 }

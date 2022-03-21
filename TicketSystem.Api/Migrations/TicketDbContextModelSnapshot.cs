@@ -79,17 +79,17 @@ namespace TicketSystem.Api.Migrations
                             Gender = 1,
                             IsDeleted = false,
                             LastName = "黑沙",
-                            PhoneNum = "12345678901",
-                            TimeOfRegister = new DateTime(2022, 3, 20, 19, 22, 10, 772, DateTimeKind.Local).AddTicks(7754),
+                            PhoneNum = "13600291522",
+                            TimeOfRegister = new DateTime(2022, 3, 21, 17, 8, 25, 601, DateTimeKind.Local).AddTicks(3866),
                             UserName = "黑沙"
                         });
                 });
 
             modelBuilder.Entity("TicketSystem.Api.Entities.Line", b =>
                 {
-                    b.Property<Guid>("LineId")
+                    b.Property<int>("LineId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("int");
 
                     b.Property<string>("EndTerminal")
                         .IsRequired()
@@ -118,84 +118,84 @@ namespace TicketSystem.Api.Migrations
                     b.HasData(
                         new
                         {
-                            LineId = new Guid("92d0ada0-2cd0-4cc9-b03d-3eccf17ab1a5"),
+                            LineId = 1,
                             EndTerminal = "哈尔滨站",
                             StartTerminal = "广州站",
                             StopStation = "广州站,武汉站,北京站,哈尔滨站"
                         },
                         new
                         {
-                            LineId = new Guid("18c9ecbb-dc2c-43e8-ba77-9a6cef3ac9bc"),
+                            LineId = 2,
                             EndTerminal = "成都站",
                             StartTerminal = "广州站",
                             StopStation = "广州站,重庆站,成都站"
                         },
                         new
                         {
-                            LineId = new Guid("cbead21b-0681-4a1a-853f-d5b61fd48f54"),
+                            LineId = 3,
                             EndTerminal = "上海站",
                             StartTerminal = "广州站",
                             StopStation = "广州站,武汉站,上海站"
                         },
                         new
                         {
-                            LineId = new Guid("10687777-24de-4a07-a677-633031ae1009"),
+                            LineId = 4,
                             EndTerminal = "哈尔滨站",
                             StartTerminal = "上海站",
                             StopStation = "上海站,北京站,哈尔滨站"
                         },
                         new
                         {
-                            LineId = new Guid("e7ff44ba-c4f9-40c8-a5a0-9ddc557f6093"),
+                            LineId = 5,
                             EndTerminal = "成都站",
                             StartTerminal = "上海站",
                             StopStation = "上海站,武汉站,重庆站,成都站"
                         },
                         new
                         {
-                            LineId = new Guid("ee3e7e33-2c85-46c9-98e5-b4bf10f32576"),
+                            LineId = 6,
                             EndTerminal = "广州站",
                             StartTerminal = "上海站",
                             StopStation = "上海站,武汉站,广州站"
                         },
                         new
                         {
-                            LineId = new Guid("b2187869-2f9f-4ea0-99b4-b8e5c8f34f3d"),
+                            LineId = 7,
                             EndTerminal = "广州站",
                             StartTerminal = "哈尔滨站",
                             StopStation = "哈尔滨站,北京站,武汉站,广州站"
                         },
                         new
                         {
-                            LineId = new Guid("ee9e796d-fbfe-42c2-8eb4-b9674206ebc7"),
+                            LineId = 8,
                             EndTerminal = "上海站",
                             StartTerminal = "哈尔滨站",
                             StopStation = "哈尔滨站,北京站,上海站"
                         },
                         new
                         {
-                            LineId = new Guid("fec134b0-8623-42db-8602-b64cce2912c2"),
+                            LineId = 9,
                             EndTerminal = "成都站",
                             StartTerminal = "哈尔滨站",
                             StopStation = "哈尔滨站,北京站,武汉站,重庆站,成都站"
                         },
                         new
                         {
-                            LineId = new Guid("804edb5e-2bce-43e7-b34b-6db68a9ceb27"),
+                            LineId = 10,
                             EndTerminal = "广州站",
                             StartTerminal = "成都站",
                             StopStation = "成都站,重庆站,广州站"
                         },
                         new
                         {
-                            LineId = new Guid("ba2b1c71-bff6-4507-ad15-99c6e13bb5fa"),
+                            LineId = 11,
                             EndTerminal = "上海站",
                             StartTerminal = "成都站",
                             StopStation = "成都站,重庆站,武汉站,上海站"
                         },
                         new
                         {
-                            LineId = new Guid("c9c55cc8-2185-40b8-b85b-55c34c918f66"),
+                            LineId = 12,
                             EndTerminal = "哈尔滨站",
                             StartTerminal = "成都站",
                             StopStation = "成都站,重庆站,武汉站,北京站,哈尔滨站"
@@ -218,22 +218,25 @@ namespace TicketSystem.Api.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<Guid>("EndTerminalId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("EndTerminalId")
+                        .HasColumnType("int");
 
                     b.Property<string>("StartTerminal")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<Guid>("StartTerminalId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("StartTerminalId")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("TrainId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("TrainId")
+                        .HasColumnType("int");
 
                     b.Property<string>("TrainName")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<double>("price")
+                        .HasColumnType("double");
 
                     b.HasKey("OrderId");
 
@@ -242,9 +245,9 @@ namespace TicketSystem.Api.Migrations
 
             modelBuilder.Entity("TicketSystem.Api.Entities.Station", b =>
                 {
-                    b.Property<Guid>("StationId")
+                    b.Property<int>("StationId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsTerminal")
                         .ValueGeneratedOnAdd()
@@ -263,43 +266,43 @@ namespace TicketSystem.Api.Migrations
                     b.HasData(
                         new
                         {
-                            StationId = new Guid("4b501cb3-d168-4cc0-b375-48fb33f318a4"),
+                            StationId = 1,
                             IsTerminal = true,
                             StationName = "广州站"
                         },
                         new
                         {
-                            StationId = new Guid("7eaa532c-1be5-472c-a738-94fd26e5fad6"),
+                            StationId = 2,
                             IsTerminal = false,
                             StationName = "重庆站"
                         },
                         new
                         {
-                            StationId = new Guid("72457e73-ea34-4e02-b575-8d384e82a481"),
+                            StationId = 3,
                             IsTerminal = false,
                             StationName = "北京站"
                         },
                         new
                         {
-                            StationId = new Guid("b091b148-8fc7-4ce5-a6c5-c61dbbb3f91f"),
+                            StationId = 4,
                             IsTerminal = true,
                             StationName = "上海站"
                         },
                         new
                         {
-                            StationId = new Guid("0846ff99-37ac-4849-804b-1eefac46d651"),
+                            StationId = 5,
                             IsTerminal = true,
                             StationName = "成都站"
                         },
                         new
                         {
-                            StationId = new Guid("07c4638c-48b7-4783-88a5-58f47e2a0458"),
+                            StationId = 6,
                             IsTerminal = true,
                             StationName = "哈尔滨站"
                         },
                         new
                         {
-                            StationId = new Guid("09626794-5565-452e-85a4-b924805588ba"),
+                            StationId = 7,
                             IsTerminal = false,
                             StationName = "武汉站"
                         });
@@ -307,12 +310,12 @@ namespace TicketSystem.Api.Migrations
 
             modelBuilder.Entity("TicketSystem.Api.Entities.Train", b =>
                 {
-                    b.Property<Guid>("TrainId")
+                    b.Property<int>("TrainId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("LineId")
-                        .HasColumnType("char(36)");
+                    b.Property<int>("LineId")
+                        .HasColumnType("int");
 
                     b.Property<TimeOnly>("Time")
                         .HasColumnType("time(6)");
@@ -339,96 +342,96 @@ namespace TicketSystem.Api.Migrations
                     b.HasData(
                         new
                         {
-                            TrainId = new Guid("cc2a984d-cd07-4329-9b22-84a5c0185ea7"),
-                            LineId = new Guid("92d0ada0-2cd0-4cc9-b03d-3eccf17ab1a5"),
+                            TrainId = 1,
+                            LineId = 1,
                             Time = new TimeOnly(14, 30, 0),
                             TrainName = "Z112",
                             TypeOfTrain = "Z"
                         },
                         new
                         {
-                            TrainId = new Guid("e185afad-aa89-4d4e-bba0-391ce821ae9d"),
-                            LineId = new Guid("18c9ecbb-dc2c-43e8-ba77-9a6cef3ac9bc"),
+                            TrainId = 2,
+                            LineId = 2,
                             Time = new TimeOnly(12, 30, 0),
                             TrainName = "D1849",
                             TypeOfTrain = "D"
                         },
                         new
                         {
-                            TrainId = new Guid("99e5b121-ef55-4e35-8d72-89d5622b73db"),
-                            LineId = new Guid("cbead21b-0681-4a1a-853f-d5b61fd48f54"),
+                            TrainId = 3,
+                            LineId = 3,
                             Time = new TimeOnly(8, 50, 0),
                             TrainName = "K528",
                             TypeOfTrain = "K"
                         },
                         new
                         {
-                            TrainId = new Guid("40843c33-3050-437d-9749-73c7823be7a1"),
-                            LineId = new Guid("10687777-24de-4a07-a677-633031ae1009"),
+                            TrainId = 4,
+                            LineId = 4,
                             Time = new TimeOnly(19, 12, 0),
                             TrainName = "G1204",
                             TypeOfTrain = "G"
                         },
                         new
                         {
-                            TrainId = new Guid("146dae5c-7912-45bc-9e5c-60cfc5d77b6a"),
-                            LineId = new Guid("e7ff44ba-c4f9-40c8-a5a0-9ddc557f6093"),
+                            TrainId = 5,
+                            LineId = 5,
                             Time = new TimeOnly(11, 45, 0),
                             TrainName = "D636",
                             TypeOfTrain = "D"
                         },
                         new
                         {
-                            TrainId = new Guid("f4abb3d9-873b-44ff-90cd-860a36fc259f"),
-                            LineId = new Guid("ee3e7e33-2c85-46c9-98e5-b4bf10f32576"),
+                            TrainId = 6,
+                            LineId = 6,
                             Time = new TimeOnly(7, 10, 0),
                             TrainName = "K527",
                             TypeOfTrain = "K"
                         },
                         new
                         {
-                            TrainId = new Guid("5d0c96b6-b3eb-497d-8c4c-f12e05fb5e29"),
-                            LineId = new Guid("b2187869-2f9f-4ea0-99b4-b8e5c8f34f3d"),
+                            TrainId = 7,
+                            LineId = 7,
                             Time = new TimeOnly(15, 55, 0),
                             TrainName = "K728",
                             TypeOfTrain = "K"
                         },
                         new
                         {
-                            TrainId = new Guid("5ee7f9cd-279f-4c5b-83bf-034f6419be7a"),
-                            LineId = new Guid("ee9e796d-fbfe-42c2-8eb4-b9674206ebc7"),
+                            TrainId = 8,
+                            LineId = 8,
                             Time = new TimeOnly(14, 3, 0),
                             TrainName = "G1202",
                             TypeOfTrain = "G"
                         },
                         new
                         {
-                            TrainId = new Guid("7971f095-300c-4628-b2a8-4e64ba04cbc3"),
-                            LineId = new Guid("fec134b0-8623-42db-8602-b64cce2912c2"),
+                            TrainId = 9,
+                            LineId = 9,
                             Time = new TimeOnly(8, 20, 0),
-                            TrainName = "K548",
+                            TrainName = "K518",
                             TypeOfTrain = "K"
                         },
                         new
                         {
-                            TrainId = new Guid("639031e7-cd65-466f-9e8b-f67c14801973"),
-                            LineId = new Guid("804edb5e-2bce-43e7-b34b-6db68a9ceb27"),
+                            TrainId = 10,
+                            LineId = 10,
                             Time = new TimeOnly(10, 10, 0),
                             TrainName = "K488",
                             TypeOfTrain = "K"
                         },
                         new
                         {
-                            TrainId = new Guid("f5d6e132-c4df-43fe-91c2-39f390dadab7"),
-                            LineId = new Guid("ba2b1c71-bff6-4507-ad15-99c6e13bb5fa"),
+                            TrainId = 11,
+                            LineId = 11,
                             Time = new TimeOnly(17, 0, 0),
                             TrainName = "G2195",
                             TypeOfTrain = "G"
                         },
                         new
                         {
-                            TrainId = new Guid("88f68a2e-d574-4dd5-b5dd-e5048b82e867"),
-                            LineId = new Guid("c9c55cc8-2185-40b8-b85b-55c34c918f66"),
+                            TrainId = 12,
+                            LineId = 12,
                             Time = new TimeOnly(18, 40, 0),
                             TrainName = "K546",
                             TypeOfTrain = "K"

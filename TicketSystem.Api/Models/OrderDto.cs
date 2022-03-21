@@ -8,5 +8,6 @@
         public Guid StartTerminalId { get; set; }
         public Guid EndTerminalId { get; set; }
         public DateTime CreatedDate { get; set; }
+        public double price { get; set; }
     }
 }

@@ -19,36 +19,36 @@ namespace TicketSystem.Api.Services
 
         //Station
         Task<IEnumerable<Station>> GetStationsAsync(StationDtoParameters? parameters);
-        Task<Station> GetStationAsync(Guid stationId);
+        Task<Station> GetStationAsync(int stationId);
         Task<Station> GetStationAsync(string stationName);
         void AddStation(Station station);
         void DeleteStation(Station station);
         void UpdateStation(Station station);
         Task<bool> StationExistsAsync(string stationName);
-        Task<bool> StationExistsAsync(Guid stationId);
+        Task<bool> StationExistsAsync(int stationId);
 
 
         //Train
-        Task<Train> GetTrainDetailAsync(Guid trainId);
-        Task<Train> GetTrainAsync(Guid lineId,Guid trainId);
+        Task<Train> GetTrainDetailAsync(int trainId);
+        Task<Train> GetTrainAsync(int lineId,int trainId);
         Task<Train> GetTrainAsync(string trainName);
         Task<IEnumerable<Train>> GetTrainsAsync(PageDtoParameters parameters);
-        void AddTrain(Guid lineId,Train train);
+        void AddTrain(int lineId,Train train);
         void AddTrain(Train train);
         void UpdateTrain(Train train);
         void DeleteTrain(Train train);
-        Task<bool> TrainExistsAsync(Guid trainId);
+        Task<bool> TrainExistsAsync(int trainId);
         Task<bool> TrainExistsAsync(string trainName);
 
 
         //Line
-        Task<Line> GetLineAsync(Guid lineId);
+        Task<Line> GetLineAsync(int lineId);
         Task<IEnumerable<Line>> GetLinesAsync(string firstStation,string lastStation);
         Task<IEnumerable<Line>> GetLinesAsync(PageDtoParameters parameters);
         void AddLine(Line line);
         void UpdateLine(Line line);
         void DeleteLine(Line line);
-        Task<bool> LineExistsAsync(Guid lineId);
+        Task<bool> LineExistsAsync(int lineId);
 
         //Order
         Task<IEnumerable<Order>> GetOrdersAsync(int bookerId);
