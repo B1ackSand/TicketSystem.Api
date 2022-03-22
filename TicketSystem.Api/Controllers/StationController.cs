@@ -87,7 +87,7 @@ public class StationController : ControllerBase
     }
 
     //redis update
-    [HttpGet("stationName",Name = "GetStationByName")]
+    [HttpGet("stationName", Name = "GetStationByName")]
     public async Task<ActionResult<StationOutputDto>>
         GetStationByName(string stationName)
     {
@@ -191,6 +191,7 @@ public class StationController : ControllerBase
         _ticketRepository.DeleteStation(stationEntity);
         var redis = new RedisUtil(_distributedCache);
         redis.RedisRemove("StationList");
+        redis.RedisRemove("Station_" + stationId);
 
         await _ticketRepository.SaveAsync();
 

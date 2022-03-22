@@ -134,6 +134,7 @@ namespace TicketSystem.Api.Controllers
             await _ticketRepository.SaveAsync();
 
             var dtoToReturn = _mapper.Map<OrderDto>(entity);
+            redis.RedisSave("Order_" + bookerId, dtoToReturn);
             redis.RedisRemove("OrderList_" + bookerId);
             redis.RedisRemove("OrderList");
 
@@ -162,7 +163,7 @@ namespace TicketSystem.Api.Controllers
                 await _ticketRepository.SaveAsync();
                 var dtoToReturn = _mapper.Map<OrderDto>(orderToAddEntity);
 
-                redis.RedisSave("Order_"+bookerId,dtoToReturn);
+                redis.RedisSave("Order_" + bookerId, dtoToReturn);
 
                 return CreatedAtRoute(nameof(GetOrderForBooker), new
                 {
@@ -201,8 +202,8 @@ namespace TicketSystem.Api.Controllers
             await _ticketRepository.SaveAsync();
             var redis = new RedisUtil(_distributedCache);
             redis.RedisRemove("OrderList");
-            redis.RedisRemove("OrderList_"+bookerId);
-            redis.RedisRemove("Order_"+bookerId);
+            redis.RedisRemove("OrderList_" + bookerId);
+            redis.RedisRemove("Order_" + bookerId);
 
             return NoContent();
         }

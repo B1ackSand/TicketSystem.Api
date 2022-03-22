@@ -120,6 +120,7 @@ public class BookerController : ControllerBase
 
         var redis = new RedisUtil(_distributedCache);
         redis.RedisSave("Booker_" + dtoToReturn.bookerId, dtoToReturn);
+        redis.RedisRemove("BookerList");
 
         return CreatedAtRoute(nameof(GetBooker), dtoToReturn);
     }
@@ -176,6 +177,7 @@ public class BookerController : ControllerBase
         await _ticketRepository.SaveAsync();
         var redis = new RedisUtil(_distributedCache);
         redis.RedisRemove("BookerList");
+        redis.RedisRemove("Booker_" + bookerId);
 
         return NoContent();
     }

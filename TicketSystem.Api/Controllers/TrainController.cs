@@ -240,6 +240,7 @@ public class TrainController : ControllerBase
         await _ticketRepository.SaveAsync();
         var redis = new RedisUtil(_distributedCache);
         redis.RedisRemove("TrainList");
+        redis.RedisRemove("Train_" + trainId);
 
         return NoContent();
     }
