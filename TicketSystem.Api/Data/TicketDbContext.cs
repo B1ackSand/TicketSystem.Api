@@ -25,7 +25,7 @@ namespace TicketSystem.Api.Data
         //在完成对派生上下文的模型的初始化后，并在该模型已锁定并用于初始化上下文之前，进一步提前配置上下文
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Booker>().Property(x=>x.BookerId).ValueGeneratedOnAdd();
+            modelBuilder.Entity<Booker>().Property(x => x.BookerId).ValueGeneratedOnAdd();
             modelBuilder.Entity<Booker>()
                 .Property(x => x.FirstName).IsRequired().HasMaxLength(20);
             modelBuilder.Entity<Booker>()
@@ -111,8 +111,8 @@ namespace TicketSystem.Api.Data
                 {
                     TrainId = 1,
                     LineId = 1,
-                    TrainName = "Z112",
-                    TypeOfTrain = "Z",
+                    TrainName = "D112",
+                    TypeOfTrain = "D",
                     Time = new TimeOnly(14, 30)
                 },
                 new Train
