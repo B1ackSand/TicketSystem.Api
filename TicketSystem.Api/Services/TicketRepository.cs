@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Http.Features;
+﻿using Geolocation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design.Internal;
 using TicketSystem.Api.Data;
 using TicketSystem.Api.DtoParameters;
 using TicketSystem.Api.Entities;
-using TicketSystem.Api.Models;
+
 
 namespace TicketSystem.Api.Services
 {
@@ -147,7 +148,7 @@ namespace TicketSystem.Api.Services
 
         public async Task<Station> GetStationAsync(int stationId)
         {
-            if (stationId ==null)
+            if (stationId == null)
             {
                 throw new ArgumentNullException(nameof(stationId));
             }
@@ -286,7 +287,7 @@ namespace TicketSystem.Api.Services
             _context.Trains.Add(train);
         }
 
-        public void AddTrain(int lineId,Train train)
+        public void AddTrain(int lineId, Train train)
         {
             if (lineId == null)
             {
@@ -537,13 +538,88 @@ namespace TicketSystem.Api.Services
         }
 
 
+        //Distance and price
+        public double GetDistance(string stopStation, string startTerminal, string endTerminal)
+        {
+            if (string.IsNullOrWhiteSpace(stopStation) || string.IsNullOrWhiteSpace(startTerminal) || string.IsNullOrWhiteSpace(endTerminal))
+            {
+                throw new ArgumentNullException(nameof(stopStation));
+            }
 
+            //获取起始和终点站区间路段
+            var strArray = stopStation.Split(',');
+            var i1 = strArray.FindIndex(startTerminal);
+            var i2 = strArray.FindIndex(stopStation);
+            var rangeStr = strArray[i1..i2].Clone() as string[];
+
+            //从数据库中获取经纬度 lon/lat
+            double distance = 0;
+            Coordinate origin;
+            var originItem = _context.Stations
+                .Where(x => x.StationName == rangeStr[0])
+                .Select(n => new
+                {
+                    n.Latitude,
+                    n.Longitude
+                }).First();
+            origin = new Coordinate(originItem.Longitude, originItem.Latitude);
+
+            //各站点之间距离求和
+            for (int i = 0; i < rangeStr.Length - 1; i++)
+            {
+                var destinationItem = _context.Stations
+                    .Where(x => x.StationName == rangeStr[i + 1])
+                    .Select(n => new
+                    {
+                        n.Latitude,
+                        n.Longitude
+                    }).First();
+                var destination = new Coordinate(destinationItem.Latitude, destinationItem.Longitude);
+                distance = GeoCalculator.GetDistance(origin, destination, 2, distanceUnit: DistanceUnit.Kilometers);
+                distance += distance;
+                origin = destination;
+            }
+
+            return distance;
+        }
+
+        public double GetPrice(double distance, string typeOfTrain)
+        {
+            double unitPrice = 0;
+            switch (typeOfTrain)
+            {
+                case "D":
+                    unitPrice = 0.4;
+                    break;
+                case "K":
+                    unitPrice = 0.3;
+                    break;
+                case "G":
+                    unitPrice = 0.5;
+                    break;
+                default:
+                    unitPrice = 0.4;
+                    break;
+            }
+            return unitPrice * distance;
+        }
 
 
         //存储至数据库
         public async Task<bool> SaveAsync()
         {
             return await _context.SaveChangesAsync() >= 0;
+        }
+
+
+    }
+
+    //拓展(Extension)
+    public static class Extensions
+    {
+        public static int FindIndex<T>(this T[] array, T item)
+        {
+            return Array.IndexOf(array, item);
         }
     }
 }

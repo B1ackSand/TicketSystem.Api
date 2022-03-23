@@ -59,6 +59,10 @@ namespace TicketSystem.Api.Services
         void UpdateOrder(Order order);
         void DeleteOrder(Order order);
 
+        //distance
+        public double GetDistance(string stopStation, string startTerminal, string endTerminal);
+        public double GetPrice(double distance, string typeOfTrain);
+
         //存储
         Task<bool> SaveAsync();
     }

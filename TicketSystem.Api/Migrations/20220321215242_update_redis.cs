@@ -186,7 +186,7 @@ namespace TicketSystem.Api.Migrations
                 columns: new[] { "TrainId", "LineId", "Time", "TrainName", "TypeOfTrain" },
                 values: new object[,]
                 {
-                    { 1, 1, new TimeOnly(14, 30, 0), "Z112", "Z" },
+                    { 1, 1, new TimeOnly(14, 30, 0), "D112", "D" },
                     { 2, 2, new TimeOnly(12, 30, 0), "D1849", "D" },
                     { 3, 3, new TimeOnly(8, 50, 0), "K528", "K" },
                     { 4, 4, new TimeOnly(19, 12, 0), "G1204", "G" },
