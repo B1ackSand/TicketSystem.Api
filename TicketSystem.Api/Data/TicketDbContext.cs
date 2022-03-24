@@ -52,6 +52,10 @@ namespace TicketSystem.Api.Data
                 .Property(x => x.StationName).IsRequired().HasMaxLength(50);
             modelBuilder.Entity<Station>()
                 .Property(x => x.IsTerminal).IsRequired().HasDefaultValue(false);
+            modelBuilder.Entity<Station>()
+                .Property(x => x.Latitude).IsRequired();
+            modelBuilder.Entity<Station>()
+                .Property(X => X.Longitude).IsRequired();
 
             modelBuilder.Entity<Line>().Property(x => x.LineId).ValueGeneratedOnAdd();
             modelBuilder.Entity<Line>()
@@ -209,43 +213,57 @@ namespace TicketSystem.Api.Data
                 {
                     StationId = 1,
                     StationName = "广州站",
-                    IsTerminal = true
+                    IsTerminal = true,
+                    Latitude = 23.148722,
+                    Longitude = 113.257652
                 },
                 new Station
                 {
                     StationId = 2,
                     StationName = "重庆站",
-                    IsTerminal = false
+                    IsTerminal = false,
+                    Latitude = 29.54952,
+                    Longitude = 106.547546
                 },
                 new Station
                 {
                     StationId = 3,
                     StationName = "北京站",
-                    IsTerminal = false
+                    IsTerminal = false,
+                    Latitude = 39.904217,
+                    Longitude = 116.427162
                 },
                 new Station
                 {
                     StationId = 4,
                     StationName = "上海站",
-                    IsTerminal = true
+                    IsTerminal = true,
+                    Latitude = 31.249601,
+                    Longitude = 121.455704
                 },
                 new Station
                 {
                     StationId = 5,
                     StationName = "成都站",
-                    IsTerminal = true
+                    IsTerminal = true,
+                    Latitude = 30.629023,
+                    Longitude = 104.154915
                 },
                 new Station
                 {
                     StationId = 6,
                     StationName = "哈尔滨站",
-                    IsTerminal = true
+                    IsTerminal = true,
+                    Latitude = 45.761089,
+                    Longitude = 126.631905
                 },
                 new Station
                 {
                     StationId = 7,
                     StationName = "武汉站",
-                    IsTerminal = false
+                    IsTerminal = false,
+                    Latitude = 30.607346,
+                    Longitude = 114.4245
                 });
 
             modelBuilder.Entity<Line>().HasData(
