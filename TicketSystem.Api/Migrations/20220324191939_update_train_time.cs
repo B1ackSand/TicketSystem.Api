@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TicketSystem.Api.Migrations
 {
-    public partial class update_letlong : Migration
+    public partial class update_train_time : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -79,7 +79,7 @@ namespace TicketSystem.Api.Migrations
                     TrainName = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     CreatedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    price = table.Column<double>(type: "double", nullable: false)
+                    Price = table.Column<double>(type: "double", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -116,7 +116,8 @@ namespace TicketSystem.Api.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     TypeOfTrain = table.Column<string>(type: "varchar(10)", maxLength: 10, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Time = table.Column<TimeOnly>(type: "time(6)", nullable: false)
+                    Time = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
@@ -133,7 +134,7 @@ namespace TicketSystem.Api.Migrations
             migrationBuilder.InsertData(
                 table: "Bookers",
                 columns: new[] { "BookerId", "BookerPwd", "CardId", "DateOfBirth", "FirstName", "Gender", "IsDeleted", "LastName", "PhoneNum", "TimeOfRegister", "UserName" },
-                values: new object[] { 1, "123456", "453009200001013710", new DateTime(2000, 1, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), "李", 1, false, "黑沙", "13600291522", new DateTime(2022, 3, 24, 16, 58, 41, 691, DateTimeKind.Local).AddTicks(5802), "黑沙" });
+                values: new object[] { 1, "123456", "453009200001013710", new DateTime(2000, 1, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), "李", 1, false, "黑沙", "13600291522", new DateTime(2022, 3, 25, 3, 19, 39, 297, DateTimeKind.Local).AddTicks(6207), "黑沙" });
 
             migrationBuilder.InsertData(
                 table: "Lines",
@@ -188,18 +189,18 @@ namespace TicketSystem.Api.Migrations
                 columns: new[] { "TrainId", "LineId", "Time", "TrainName", "TypeOfTrain" },
                 values: new object[,]
                 {
-                    { 1, 1, new TimeOnly(14, 30, 0), "D112", "D" },
-                    { 2, 2, new TimeOnly(12, 30, 0), "D1849", "D" },
-                    { 3, 3, new TimeOnly(8, 50, 0), "K528", "K" },
-                    { 4, 4, new TimeOnly(19, 12, 0), "G1204", "G" },
-                    { 5, 5, new TimeOnly(11, 45, 0), "D636", "D" },
-                    { 6, 6, new TimeOnly(7, 10, 0), "K527", "K" },
-                    { 7, 7, new TimeOnly(15, 55, 0), "K728", "K" },
-                    { 8, 8, new TimeOnly(14, 3, 0), "G1202", "G" },
-                    { 9, 9, new TimeOnly(8, 20, 0), "K518", "K" },
-                    { 10, 10, new TimeOnly(10, 10, 0), "K488", "K" },
-                    { 11, 11, new TimeOnly(17, 0, 0), "G2195", "G" },
-                    { 12, 12, new TimeOnly(18, 40, 0), "K546", "K" }
+                    { 1, 1, "07:41,09:06,15:03,21:01", "D112", "D" },
+                    { 2, 2, "10:16,17:43,19:17", "D1849", "D" },
+                    { 3, 3, "07:50,16:38,04:29(+1)", "K528", "K" },
+                    { 4, 4, "09:33,16:12,21:36", "G1204", "G" },
+                    { 5, 5, "06:32,12:00,18:44,20:42", "D636", "D" },
+                    { 6, 6, "19:15,10:12(+1),17:21(+1)", "K527", "K" },
+                    { 7, 7, "07:41,10:06,15:03,21:01", "D728", "D" },
+                    { 8, 8, "08:52,15:01,21:40", "G1202", "G" },
+                    { 9, 9, "19:15,06:12(+1),17:21(+1),23:50(+1)", "K518", "K" },
+                    { 10, 10, "07:15,15:12,23:21", "K488", "K" },
+                    { 11, 11, "06:10,11:27,15:25,19:27", "G2195", "G" },
+                    { 12, 12, "18:15,05:12(+1),16:21(+1),22:50(+1)", "K546", "K" }
                 });
 
             migrationBuilder.CreateIndex(

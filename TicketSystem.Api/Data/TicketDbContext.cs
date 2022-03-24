@@ -117,7 +117,7 @@ namespace TicketSystem.Api.Data
                     LineId = 1,
                     TrainName = "D112",
                     TypeOfTrain = "D",
-                    Time = new TimeOnly(14, 30)
+                    Time = "07:41,09:06,15:03,21:01"
                 },
                 new Train
                 {
@@ -125,7 +125,7 @@ namespace TicketSystem.Api.Data
                     LineId = 2,
                     TrainName = "D1849",
                     TypeOfTrain = "D",
-                    Time = new TimeOnly(12, 30)
+                    Time = "10:16,17:43,19:17"
                 },
                 new Train
                 {
@@ -133,7 +133,7 @@ namespace TicketSystem.Api.Data
                     LineId = 3,
                     TrainName = "K528",
                     TypeOfTrain = "K",
-                    Time = new TimeOnly(8, 50)
+                    Time = "07:50,16:38,04:29(+1)"
                 },
                 new Train
                 {
@@ -141,7 +141,7 @@ namespace TicketSystem.Api.Data
                     LineId = 4,
                     TrainName = "G1204",
                     TypeOfTrain = "G",
-                    Time = new TimeOnly(19, 12)
+                    Time = "09:33,16:12,21:36"
                 },
                 new Train
                 {
@@ -149,7 +149,7 @@ namespace TicketSystem.Api.Data
                     LineId = 5,
                     TrainName = "D636",
                     TypeOfTrain = "D",
-                    Time = new TimeOnly(11, 45)
+                    Time = "06:32,12:00,18:44,20:42"
                 },
                 new Train
                 {
@@ -157,15 +157,15 @@ namespace TicketSystem.Api.Data
                     LineId = 6,
                     TrainName = "K527",
                     TypeOfTrain = "K",
-                    Time = new TimeOnly(7, 10)
+                    Time = "19:15,10:12(+1),17:21(+1)"
                 },
                 new Train
                 {
                     TrainId = 7,
                     LineId = 7,
-                    TrainName = "K728",
-                    TypeOfTrain = "K",
-                    Time = new TimeOnly(15, 55)
+                    TrainName = "D728",
+                    TypeOfTrain = "D",
+                    Time = "07:41,10:06,15:03,21:01"
                 },
                 new Train
                 {
@@ -173,7 +173,7 @@ namespace TicketSystem.Api.Data
                     LineId = 8,
                     TrainName = "G1202",
                     TypeOfTrain = "G",
-                    Time = new TimeOnly(14, 3)
+                    Time = "08:52,15:01,21:40"
                 },
                 new Train
                 {
@@ -181,7 +181,7 @@ namespace TicketSystem.Api.Data
                     LineId = 9,
                     TrainName = "K518",
                     TypeOfTrain = "K",
-                    Time = new TimeOnly(8, 20)
+                    Time = "19:15,06:12(+1),17:21(+1),23:50(+1)"
                 },
                 new Train
                 {
@@ -189,7 +189,7 @@ namespace TicketSystem.Api.Data
                     LineId = 10,
                     TrainName = "K488",
                     TypeOfTrain = "K",
-                    Time = new TimeOnly(10, 10)
+                    Time = "07:15,15:12,23:21"
                 },
                 new Train
                 {
@@ -197,7 +197,7 @@ namespace TicketSystem.Api.Data
                     LineId = 11,
                     TrainName = "G2195",
                     TypeOfTrain = "G",
-                    Time = new TimeOnly(17, 00)
+                    Time = "06:10,11:27,15:25,19:27"
                 },
                 new Train
                 {
@@ -205,7 +205,7 @@ namespace TicketSystem.Api.Data
                     LineId = 12,
                     TrainName = "K546",
                     TypeOfTrain = "K",
-                    Time = new TimeOnly(18, 40)
+                    Time = "18:15,05:12(+1),16:21(+1),22:50(+1)"
                 });
 
             modelBuilder.Entity<Station>().HasData(

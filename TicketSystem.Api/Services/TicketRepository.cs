@@ -585,24 +585,30 @@ namespace TicketSystem.Api.Services
         public double GetPrice(double distance, string typeOfTrain)
         {
             double unitPrice = 0;
-            switch (typeOfTrain)
+            switch (typeOfTrain.Substring(0,1))
             {
                 case "D":
-                    unitPrice = 0.4;
-                    break;
-                case "K":
                     unitPrice = 0.3;
                     break;
+                case "K":
+                    unitPrice = 0.2;
+                    break;
                 case "G":
-                    unitPrice = 0.5;
+                    unitPrice = 0.4;
                     break;
                 default:
-                    unitPrice = 0.4;
+                    unitPrice = 0.3;
                     break;
             }
             return unitPrice * distance;
         }
 
+        public string GetDeparture(string stopStation, string startTerminal,string time)
+        {
+            var strArray = stopStation.Split(',');
+            var i1 = strArray.FindIndex(startTerminal);
+            return time.Split(',')[i1];
+        }
 
         //存储至数据库
         public async Task<bool> SaveAsync()

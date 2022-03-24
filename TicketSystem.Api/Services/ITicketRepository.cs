@@ -62,6 +62,7 @@ namespace TicketSystem.Api.Services
         //distance
         public double GetDistance(string stopStation, string startTerminal, string endTerminal);
         public double GetPrice(double distance, string typeOfTrain);
+        public string GetDeparture(string stopStation, string startTerminal, string time);
 
         //存储
         Task<bool> SaveAsync();
