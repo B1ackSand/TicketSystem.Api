@@ -25,13 +25,13 @@ public class DistanceController : ControllerBase
     [HttpGet("getDistance")]
     public async Task<ActionResult<DistanceOutputDto>> DistanceCal(string stopStation, string startTerminal, string endTerminal, string typeOfTrain)
     {
-        var cacheKey = "Distance_" + stopStation;
+        var cacheKey = "Distance_" + startTerminal +"_"+endTerminal;
         var redis = new RedisUtil(_distributedCache);
         DistanceOutputDto distanceDto;
         var redisByte = await _distributedCache.GetAsync(cacheKey);
         if (redisByte != null)
         {
-            var distanceList = JsonConvert.DeserializeObject<Distance>(redis.RedisRead(redisByte));
+            var distanceList = JsonConvert.DeserializeObject<DistanceOutputDto>(redis.RedisRead(redisByte));
             distanceDto = _mapper.Map<DistanceOutputDto>(distanceList);
         }
         else

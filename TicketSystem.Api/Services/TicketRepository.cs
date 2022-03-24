@@ -549,12 +549,11 @@ namespace TicketSystem.Api.Services
             //获取起始和终点站区间路段
             var strArray = stopStation.Split(',');
             var i1 = strArray.FindIndex(startTerminal);
-            var i2 = strArray.FindIndex(stopStation);
-            var rangeStr = strArray[i1..i2].Clone() as string[];
+            var i2 = strArray.FindIndex(endTerminal);
+            var rangeStr = strArray[i1..(i2 + 1)].Clone() as string[];
 
             //从数据库中获取经纬度 lon/lat
             double distance = 0;
-            Coordinate origin;
             var originItem = _context.Stations
                 .Where(x => x.StationName == rangeStr[0])
                 .Select(n => new
@@ -562,7 +561,7 @@ namespace TicketSystem.Api.Services
                     n.Latitude,
                     n.Longitude
                 }).First();
-            origin = new Coordinate(originItem.Longitude, originItem.Latitude);
+            Coordinate origin = new Coordinate(originItem.Latitude, originItem.Longitude);
 
             //各站点之间距离求和
             for (int i = 0; i < rangeStr.Length - 1; i++)
@@ -575,8 +574,8 @@ namespace TicketSystem.Api.Services
                         n.Longitude
                     }).First();
                 var destination = new Coordinate(destinationItem.Latitude, destinationItem.Longitude);
-                distance = GeoCalculator.GetDistance(origin, destination, 2, distanceUnit: DistanceUnit.Kilometers);
-                distance += distance;
+                double distanceTemp = GeoCalculator.GetDistance(origin, destination, 2, distanceUnit: DistanceUnit.Kilometers);
+                distance += distanceTemp;
                 origin = destination;
             }
 

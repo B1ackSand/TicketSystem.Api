@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TicketSystem.Api.Migrations
 {
-    public partial class update_redis : Migration
+    public partial class update_letlong : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -95,7 +95,9 @@ namespace TicketSystem.Api.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     StationName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    IsTerminal = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValue: false)
+                    IsTerminal = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValue: false),
+                    Latitude = table.Column<double>(type: "double", nullable: false),
+                    Longitude = table.Column<double>(type: "double", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -131,7 +133,7 @@ namespace TicketSystem.Api.Migrations
             migrationBuilder.InsertData(
                 table: "Bookers",
                 columns: new[] { "BookerId", "BookerPwd", "CardId", "DateOfBirth", "FirstName", "Gender", "IsDeleted", "LastName", "PhoneNum", "TimeOfRegister", "UserName" },
-                values: new object[] { 1, "123456", "453009200001013710", new DateTime(2000, 1, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), "李", 1, false, "黑沙", "13600291522", new DateTime(2022, 3, 22, 5, 52, 42, 198, DateTimeKind.Local).AddTicks(2232), "黑沙" });
+                values: new object[] { 1, "123456", "453009200001013710", new DateTime(2000, 1, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), "李", 1, false, "黑沙", "13600291522", new DateTime(2022, 3, 24, 16, 58, 41, 691, DateTimeKind.Local).AddTicks(5802), "黑沙" });
 
             migrationBuilder.InsertData(
                 table: "Lines",
@@ -154,32 +156,32 @@ namespace TicketSystem.Api.Migrations
 
             migrationBuilder.InsertData(
                 table: "Stations",
-                columns: new[] { "StationId", "IsTerminal", "StationName" },
-                values: new object[] { 1, true, "广州站" });
+                columns: new[] { "StationId", "IsTerminal", "Latitude", "Longitude", "StationName" },
+                values: new object[] { 1, true, 23.148721999999999, 113.25765199999999, "广州站" });
 
             migrationBuilder.InsertData(
                 table: "Stations",
-                columns: new[] { "StationId", "StationName" },
+                columns: new[] { "StationId", "Latitude", "Longitude", "StationName" },
                 values: new object[,]
                 {
-                    { 2, "重庆站" },
-                    { 3, "北京站" }
+                    { 2, 29.549520000000001, 106.547546, "重庆站" },
+                    { 3, 39.904217000000003, 116.427162, "北京站" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Stations",
-                columns: new[] { "StationId", "IsTerminal", "StationName" },
+                columns: new[] { "StationId", "IsTerminal", "Latitude", "Longitude", "StationName" },
                 values: new object[,]
                 {
-                    { 4, true, "上海站" },
-                    { 5, true, "成都站" },
-                    { 6, true, "哈尔滨站" }
+                    { 4, true, 31.249600999999998, 121.455704, "上海站" },
+                    { 5, true, 30.629023, 104.154915, "成都站" },
+                    { 6, true, 45.761088999999998, 126.631905, "哈尔滨站" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Stations",
-                columns: new[] { "StationId", "StationName" },
-                values: new object[] { 7, "武汉站" });
+                columns: new[] { "StationId", "Latitude", "Longitude", "StationName" },
+                values: new object[] { 7, 30.607346, 114.42449999999999, "武汉站" });
 
             migrationBuilder.InsertData(
                 table: "Trains",

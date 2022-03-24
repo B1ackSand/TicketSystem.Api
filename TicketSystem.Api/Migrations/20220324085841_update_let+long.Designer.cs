@@ -11,8 +11,8 @@ using TicketSystem.Api.Data;
 namespace TicketSystem.Api.Migrations
 {
     [DbContext(typeof(TicketDbContext))]
-    [Migration("20220321215242_update_redis")]
-    partial class update_redis
+    [Migration("20220324085841_update_let+long")]
+    partial class update_letlong
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -82,7 +82,7 @@ namespace TicketSystem.Api.Migrations
                             IsDeleted = false,
                             LastName = "黑沙",
                             PhoneNum = "13600291522",
-                            TimeOfRegister = new DateTime(2022, 3, 22, 5, 52, 42, 198, DateTimeKind.Local).AddTicks(2232),
+                            TimeOfRegister = new DateTime(2022, 3, 24, 16, 58, 41, 691, DateTimeKind.Local).AddTicks(5802),
                             UserName = "黑沙"
                         });
                 });
@@ -254,6 +254,12 @@ namespace TicketSystem.Api.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false);
 
+                    b.Property<double>("Latitude")
+                        .HasColumnType("double");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("double");
+
                     b.Property<string>("StationName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -268,42 +274,56 @@ namespace TicketSystem.Api.Migrations
                         {
                             StationId = 1,
                             IsTerminal = true,
+                            Latitude = 23.148721999999999,
+                            Longitude = 113.25765199999999,
                             StationName = "广州站"
                         },
                         new
                         {
                             StationId = 2,
                             IsTerminal = false,
+                            Latitude = 29.549520000000001,
+                            Longitude = 106.547546,
                             StationName = "重庆站"
                         },
                         new
                         {
                             StationId = 3,
                             IsTerminal = false,
+                            Latitude = 39.904217000000003,
+                            Longitude = 116.427162,
                             StationName = "北京站"
                         },
                         new
                         {
                             StationId = 4,
                             IsTerminal = true,
+                            Latitude = 31.249600999999998,
+                            Longitude = 121.455704,
                             StationName = "上海站"
                         },
                         new
                         {
                             StationId = 5,
                             IsTerminal = true,
+                            Latitude = 30.629023,
+                            Longitude = 104.154915,
                             StationName = "成都站"
                         },
                         new
                         {
                             StationId = 6,
                             IsTerminal = true,
+                            Latitude = 45.761088999999998,
+                            Longitude = 126.631905,
                             StationName = "哈尔滨站"
                         },
                         new
                         {
                             StationId = 7,
                             IsTerminal = false,
+                            Latitude = 30.607346,
+                            Longitude = 114.42449999999999,
                             StationName = "武汉站"
                         });
                 });
@@ -345,8 +365,8 @@ namespace TicketSystem.Api.Migrations
                             TrainId = 1,
                             LineId = 1,
                             Time = new TimeOnly(14, 30, 0),
-                            TrainName = "Z112",
-                            TypeOfTrain = "Z"
+                            TrainName = "D112",
+                            TypeOfTrain = "D"
                         },
                         new
                         {
