@@ -8,6 +8,6 @@
         public int StartTerminalId { get; set; }
         public int EndTerminalId { get; set; }
         public DateTime CreatedDate { get; set; }
-        public double price { get; set; }
+        public double Price { get; set; }
     }
 }

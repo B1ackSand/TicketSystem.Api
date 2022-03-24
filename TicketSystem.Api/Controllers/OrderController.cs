@@ -97,17 +97,17 @@ namespace TicketSystem.Api.Controllers
 
         //redis update
         [HttpGet("getAllOrders", Name = nameof(GetOrders))]
-        public async Task<ActionResult<OrderDto>>
+        public async Task<ActionResult<OrderOutputDto>>
             GetOrders([FromQuery] PageDtoParameters? parameters)
         {
             var cacheKey = "OrderList";
-            IEnumerable<OrderDto> ordersDto;
+            IEnumerable<OrderOutputDto> ordersDto;
             var redis = new RedisUtil(_distributedCache);
             var redisByte = await _distributedCache.GetAsync(cacheKey);
             if (redisByte != null)
             {
                 var orderList = JsonConvert.DeserializeObject<List<Order>>(redis.RedisRead(redisByte));
-                ordersDto = _mapper.Map<IEnumerable<OrderDto>>(orderList);
+                ordersDto = _mapper.Map<IEnumerable<OrderOutputDto>>(orderList);
             }
             else
             {
@@ -117,7 +117,7 @@ namespace TicketSystem.Api.Controllers
                     return NotFound();
                 }
 
-                ordersDto = _mapper.Map<IEnumerable<OrderDto>>(orders);
+                ordersDto = _mapper.Map<IEnumerable<OrderOutputDto>>(orders);
                 redis.RedisSave(cacheKey, ordersDto);
             }
 

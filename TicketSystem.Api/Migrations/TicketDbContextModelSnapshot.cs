@@ -80,7 +80,7 @@ namespace TicketSystem.Api.Migrations
                             IsDeleted = false,
                             LastName = "黑沙",
                             PhoneNum = "13600291522",
-                            TimeOfRegister = new DateTime(2022, 3, 24, 16, 58, 41, 691, DateTimeKind.Local).AddTicks(5802),
+                            TimeOfRegister = new DateTime(2022, 3, 25, 3, 19, 39, 297, DateTimeKind.Local).AddTicks(6207),
                             UserName = "黑沙"
                         });
                 });
@@ -219,6 +219,9 @@ namespace TicketSystem.Api.Migrations
                     b.Property<int>("EndTerminalId")
                         .HasColumnType("int");
 
+                    b.Property<double>("Price")
+                        .HasColumnType("double");
+
                     b.Property<string>("StartTerminal")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -232,9 +235,6 @@ namespace TicketSystem.Api.Migrations
                     b.Property<string>("TrainName")
                         .IsRequired()
                         .HasColumnType("longtext");
-
-                    b.Property<double>("price")
-                        .HasColumnType("double");
 
                     b.HasKey("OrderId");
 
@@ -335,8 +335,9 @@ namespace TicketSystem.Api.Migrations
                     b.Property<int>("LineId")
                         .HasColumnType("int");
 
-                    b.Property<TimeOnly>("Time")
-                        .HasColumnType("time(6)");
+                    b.Property<string>("Time")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("TrainName")
                         .IsRequired()
@@ -362,7 +363,7 @@ namespace TicketSystem.Api.Migrations
                         {
                             TrainId = 1,
                             LineId = 1,
-                            Time = new TimeOnly(14, 30, 0),
+                            Time = "07:41,09:06,15:03,21:01",
                             TrainName = "D112",
                             TypeOfTrain = "D"
                         },
@@ -370,7 +371,7 @@ namespace TicketSystem.Api.Migrations
                         {
                             TrainId = 2,
                             LineId = 2,
-                            Time = new TimeOnly(12, 30, 0),
+                            Time = "10:16,17:43,19:17",
                             TrainName = "D1849",
                             TypeOfTrain = "D"
                         },
@@ -378,7 +379,7 @@ namespace TicketSystem.Api.Migrations
                         {
                             TrainId = 3,
                             LineId = 3,
-                            Time = new TimeOnly(8, 50, 0),
+                            Time = "07:50,16:38,04:29(+1)",
                             TrainName = "K528",
                             TypeOfTrain = "K"
                         },
@@ -386,7 +387,7 @@ namespace TicketSystem.Api.Migrations
                         {
                             TrainId = 4,
                             LineId = 4,
-                            Time = new TimeOnly(19, 12, 0),
+                            Time = "09:33,16:12,21:36",
                             TrainName = "G1204",
                             TypeOfTrain = "G"
                         },
@@ -394,7 +395,7 @@ namespace TicketSystem.Api.Migrations
                         {
                             TrainId = 5,
                             LineId = 5,
-                            Time = new TimeOnly(11, 45, 0),
+                            Time = "06:32,12:00,18:44,20:42",
                             TrainName = "D636",
                             TypeOfTrain = "D"
                         },
@@ -402,7 +403,7 @@ namespace TicketSystem.Api.Migrations
                         {
                             TrainId = 6,
                             LineId = 6,
-                            Time = new TimeOnly(7, 10, 0),
+                            Time = "19:15,10:12(+1),17:21(+1)",
                             TrainName = "K527",
                             TypeOfTrain = "K"
                         },
@@ -410,15 +411,15 @@ namespace TicketSystem.Api.Migrations
                         {
                             TrainId = 7,
                             LineId = 7,
-                            Time = new TimeOnly(15, 55, 0),
-                            TrainName = "K728",
-                            TypeOfTrain = "K"
+                            Time = "07:41,10:06,15:03,21:01",
+                            TrainName = "D728",
+                            TypeOfTrain = "D"
                         },
                         new
                         {
                             TrainId = 8,
                             LineId = 8,
-                            Time = new TimeOnly(14, 3, 0),
+                            Time = "08:52,15:01,21:40",
                             TrainName = "G1202",
                             TypeOfTrain = "G"
                         },
@@ -426,7 +427,7 @@ namespace TicketSystem.Api.Migrations
                         {
                             TrainId = 9,
                             LineId = 9,
-                            Time = new TimeOnly(8, 20, 0),
+                            Time = "19:15,06:12(+1),17:21(+1),23:50(+1)",
                             TrainName = "K518",
                             TypeOfTrain = "K"
                         },
@@ -434,7 +435,7 @@ namespace TicketSystem.Api.Migrations
                         {
                             TrainId = 10,
                             LineId = 10,
-                            Time = new TimeOnly(10, 10, 0),
+                            Time = "07:15,15:12,23:21",
                             TrainName = "K488",
                             TypeOfTrain = "K"
                         },
@@ -442,7 +443,7 @@ namespace TicketSystem.Api.Migrations
                         {
                             TrainId = 11,
                             LineId = 11,
-                            Time = new TimeOnly(17, 0, 0),
+                            Time = "06:10,11:27,15:25,19:27",
                             TrainName = "G2195",
                             TypeOfTrain = "G"
                         },
@@ -450,7 +451,7 @@ namespace TicketSystem.Api.Migrations
                         {
                             TrainId = 12,
                             LineId = 12,
-                            Time = new TimeOnly(18, 40, 0),
+                            Time = "18:15,05:12(+1),16:21(+1),22:50(+1)",
                             TrainName = "K546",
                             TypeOfTrain = "K"
                         });

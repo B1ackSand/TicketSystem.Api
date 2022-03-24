@@ -9,6 +9,8 @@ using TicketSystem.Api.Utils;
 
 namespace TicketSystem.Api.Controllers;
 
+[ApiController]
+[Route("api")]
 public class DistanceController : ControllerBase
 {
     private readonly ITicketRepository _ticketRepository;
@@ -25,7 +27,7 @@ public class DistanceController : ControllerBase
     [HttpGet("getDistance")]
     public async Task<ActionResult<DistanceOutputDto>> DistanceCal(string stopStation, string startTerminal, string endTerminal, string typeOfTrain)
     {
-        var cacheKey = "Distance_" + startTerminal +"_"+endTerminal;
+        var cacheKey = "Distance_" + startTerminal + "_" + endTerminal + "_" + typeOfTrain;
         var redis = new RedisUtil(_distributedCache);
         DistanceOutputDto distanceDto;
         var redisByte = await _distributedCache.GetAsync(cacheKey);
@@ -42,15 +44,22 @@ public class DistanceController : ControllerBase
             }
 
             double distanceKm = _ticketRepository.GetDistance(stopStation, startTerminal, endTerminal);
+            string time = _ticketRepository.GetTrainAsync(typeOfTrain).Result.Time;
             if (distanceKm == null)
             {
                 return NotFound();
             }
             var price = _ticketRepository.GetPrice(distanceKm, typeOfTrain);
+            var departureTime = _ticketRepository.GetDeparture(stopStation, startTerminal,time);
+            if (departureTime == null)
+            {
+                return NotFound();
+            }
 
             Distance distance = new Distance();
             distance.StationDistance = distanceKm;
             distance.Price = price;
+            distance.DepartureTime = departureTime;
 
             distanceDto = _mapper.Map<DistanceOutputDto>(distance);
             redis.RedisSave(cacheKey, distanceDto);
