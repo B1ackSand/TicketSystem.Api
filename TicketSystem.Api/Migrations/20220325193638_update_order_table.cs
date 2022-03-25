@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TicketSystem.Api.Migrations
 {
-    public partial class update_train_time : Migration
+    public partial class update_order_table : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -79,7 +79,9 @@ namespace TicketSystem.Api.Migrations
                     TrainName = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     CreatedDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Price = table.Column<double>(type: "double", nullable: false)
+                    Price = table.Column<double>(type: "double", nullable: false),
+                    DateBook = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
@@ -134,7 +136,7 @@ namespace TicketSystem.Api.Migrations
             migrationBuilder.InsertData(
                 table: "Bookers",
                 columns: new[] { "BookerId", "BookerPwd", "CardId", "DateOfBirth", "FirstName", "Gender", "IsDeleted", "LastName", "PhoneNum", "TimeOfRegister", "UserName" },
-                values: new object[] { 1, "123456", "453009200001013710", new DateTime(2000, 1, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), "李", 1, false, "黑沙", "13600291522", new DateTime(2022, 3, 25, 3, 19, 39, 297, DateTimeKind.Local).AddTicks(6207), "黑沙" });
+                values: new object[] { 1, "123456", "453009200001013710", new DateTime(2000, 1, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), "李", 1, false, "黑沙", "13600291522", new DateTime(2022, 3, 26, 3, 36, 38, 649, DateTimeKind.Local).AddTicks(8929), "黑沙" });
 
             migrationBuilder.InsertData(
                 table: "Lines",

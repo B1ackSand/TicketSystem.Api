@@ -43,6 +43,7 @@ CREATE TABLE `Orders` (
     `TrainName` longtext CHARACTER SET utf8mb4 NOT NULL,
     `CreatedDate` datetime(6) NOT NULL,
     `Price` double NOT NULL,
+    `DateBook` longtext CHARACTER SET utf8mb4 NOT NULL,
     CONSTRAINT `PK_Orders` PRIMARY KEY (`OrderId`)
 ) CHARACTER SET=utf8mb4;
 
@@ -66,7 +67,7 @@ CREATE TABLE `Trains` (
 ) CHARACTER SET=utf8mb4;
 
 INSERT INTO `Bookers` (`BookerId`, `BookerPwd`, `CardId`, `DateOfBirth`, `FirstName`, `Gender`, `IsDeleted`, `LastName`, `PhoneNum`, `TimeOfRegister`, `UserName`)
-VALUES (1, '123456', '453009200001013710', TIMESTAMP '2000-01-09 00:00:00', '李', 1, False, '黑沙', '13600291522', TIMESTAMP '2022-03-25 03:19:39', '黑沙');
+VALUES (1, '123456', '453009200001013710', TIMESTAMP '2000-01-09 00:00:00', '李', 1, False, '黑沙', '13600291522', TIMESTAMP '2022-03-26 03:36:38', '黑沙');
 
 INSERT INTO `Lines` (`LineId`, `EndTerminal`, `StartTerminal`, `StopStation`, `TrainName`)
 VALUES (1, '哈尔滨站', '广州站', '广州站,武汉站,北京站,哈尔滨站', NULL);
@@ -141,7 +142,7 @@ CREATE INDEX `IX_Trains_LineId` ON `Trains` (`LineId`);
 CREATE UNIQUE INDEX `IX_Trains_TrainName` ON `Trains` (`TrainName`);
 
 INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
-VALUES ('20220324191939_update_train_time', '6.0.3');
+VALUES ('20220325193638_update_order_table', '6.0.3');
 
 COMMIT;
 

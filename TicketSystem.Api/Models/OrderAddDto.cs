@@ -6,5 +6,6 @@
         public int StartTerminalId { get; set; }
         public int EndTerminalId { get; set; }
         public double Price { get; set; }
+        public string DateBook { get; set; }
     }
 }

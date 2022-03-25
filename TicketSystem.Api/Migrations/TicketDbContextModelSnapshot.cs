@@ -80,7 +80,7 @@ namespace TicketSystem.Api.Migrations
                             IsDeleted = false,
                             LastName = "黑沙",
                             PhoneNum = "13600291522",
-                            TimeOfRegister = new DateTime(2022, 3, 25, 3, 19, 39, 297, DateTimeKind.Local).AddTicks(6207),
+                            TimeOfRegister = new DateTime(2022, 3, 26, 3, 36, 38, 649, DateTimeKind.Local).AddTicks(8929),
                             UserName = "黑沙"
                         });
                 });
@@ -211,6 +211,10 @@ namespace TicketSystem.Api.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<string>("DateBook")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("EndTerminal")
                         .IsRequired()
