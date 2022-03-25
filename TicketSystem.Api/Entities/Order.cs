@@ -12,5 +12,6 @@
         public string TrainName { get; set; }
         public DateTime CreatedDate { get; set; }
         public double Price { get; set; }
+        public string DateBook { get; set; }
     }
 }
