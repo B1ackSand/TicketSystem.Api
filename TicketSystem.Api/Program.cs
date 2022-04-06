@@ -58,7 +58,7 @@ builder.Services.AddSwaggerGen();
 // Ìí¼ÓRedis·þÎñ
 builder.Services.AddStackExchangeRedisCache(options =>
 {
-    options.Configuration = "localhost:6379,password=123456";
+    options.Configuration = "localhost:6800,password=123456";
     options.InstanceName = "TicketSystem_";
 });
 

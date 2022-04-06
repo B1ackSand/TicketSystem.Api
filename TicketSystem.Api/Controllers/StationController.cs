@@ -32,22 +32,10 @@ public class StationController : ControllerBase
     public async Task<ActionResult<IEnumerable<StationOutputDto>>>
         GetStations([FromQuery] StationDtoParameters? parameters)
     {
-        var cacheKey = "StationList";
-        var redis = new RedisUtil(_distributedCache);
-        IEnumerable<StationOutputDto> stationDtos;
-        var redisByte = await _distributedCache.GetAsync(cacheKey);
-        if (redisByte != null)
-        {
-            var stationList = JsonConvert.DeserializeObject<List<Station>>(redis.RedisRead(redisByte));
-            stationDtos = _mapper.Map<IEnumerable<StationOutputDto>>(stationList);
-        }
-        else
-        {
-            var stations = await _ticketRepository.GetStationsAsync(parameters);
-            stationDtos = _mapper.Map<IEnumerable<StationOutputDto>>(stations);
-            redis.RedisSave(cacheKey, stationDtos);
-        }
 
+        IEnumerable<StationOutputDto> stationDtos;
+        var stations = await _ticketRepository.GetStationsAsync(parameters);
+        stationDtos = _mapper.Map<IEnumerable<StationOutputDto>>(stations);
         return Ok(stationDtos);
     }
 
@@ -190,7 +178,6 @@ public class StationController : ControllerBase
         await _ticketRepository.GetStationAsync(stationId);
         _ticketRepository.DeleteStation(stationEntity);
         var redis = new RedisUtil(_distributedCache);
-        redis.RedisRemove("StationList");
         redis.RedisRemove("Station_" + stationId);
 
         await _ticketRepository.SaveAsync();

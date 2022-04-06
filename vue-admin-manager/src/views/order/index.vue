@@ -18,11 +18,11 @@
           <el-input v-model="bookerForm.trainId" />
         </el-form-item>
 
-        <el-form-item prop="startTerminalId" label="起始站ID">
+        <el-form-item prop="startTerminal" label="起始站">
           <el-input v-model="bookerForm.startTerminalId" />
         </el-form-item>
 
-        <el-form-item prop="endTerminalId" label="终点站ID">
+        <el-form-item prop="endTerminal" label="终点站">
           <el-input v-model="bookerForm.endTerminalId" />
         </el-form-item>
       </el-form>
@@ -49,11 +49,11 @@
           <el-input v-model="bookerForm.trainId" />
         </el-form-item>
 
-        <el-form-item prop="startTerminalId" label="起始站ID">
+        <el-form-item prop="startTerminal" label="起始站">
           <el-input v-model="bookerForm.startTerminalId" />
         </el-form-item>
 
-        <el-form-item prop="endTerminalId" label="终点站ID">
+        <el-form-item prop="endTerminal" label="终点站">
           <el-input v-model="bookerForm.endTerminalId" />
         </el-form-item>
 
@@ -78,7 +78,7 @@
       <el-table-column
         prop="bookerId"
         label="订票人ID"
-        width="300px"
+        width="100px"
       />
 
       <el-table-column
@@ -88,14 +88,14 @@
       />
 
       <el-table-column
-        prop="startTerminalId"
-        label="起始站ID"
+        prop="startTerminal"
+        label="起始站"
         width="300px"
       />
 
       <el-table-column
-        prop="endTerminalId"
-        label="终点站ID"
+        prop="endTerminal"
+        label="终点站"
         width="300px"
       />
 
@@ -132,8 +132,8 @@ export default {
         orderId: '',
         bookerId: '',
         trainId: '',
-        startTerminalId: '',
-        endTerminalId: '',
+        startTerminal: '',
+        endTerminal: '',
         createdDate: ''
       },
       dialogFormVisible: false,

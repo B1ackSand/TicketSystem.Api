@@ -141,27 +141,13 @@ public class TrainController : ControllerBase
     public async Task<ActionResult<BookerOutputDto>>
         GetTrains([FromQuery] PageDtoParameters? parameters)
     {
-        var cacheKey = "TrainList";
         IEnumerable<TrainOutputDto> trainsDtos;
-        var redis = new RedisUtil(_distributedCache);
-        var redisByte = await _distributedCache.GetAsync(cacheKey);
-        if (redisByte != null)
+        var trains = await _ticketRepository.GetTrainsAsync(parameters);
+        if (trains == null)
         {
-            var trainList = JsonConvert.DeserializeObject<List<Train>>(redis.RedisRead(redisByte));
-            trainsDtos = _mapper.Map<IEnumerable<TrainOutputDto>>(trainList);
+            return NotFound();
         }
-        else
-        {
-            var trains = await _ticketRepository.GetTrainsAsync(parameters);
-            if (trains == null)
-            {
-                return NotFound();
-            }
-
-            trainsDtos = _mapper.Map<IEnumerable<TrainOutputDto>>(trains);
-            redis.RedisSave(cacheKey, trainsDtos);
-        }
-
+        trainsDtos = _mapper.Map<IEnumerable<TrainOutputDto>>(trains);
         return Ok(trainsDtos);
     }
 
@@ -239,7 +225,6 @@ public class TrainController : ControllerBase
 
         await _ticketRepository.SaveAsync();
         var redis = new RedisUtil(_distributedCache);
-        redis.RedisRemove("TrainList");
         redis.RedisRemove("Train_" + trainId);
 
         return NoContent();
