@@ -95,32 +95,17 @@ namespace TicketSystem.Api.Controllers
         }
 
 
-        //redis update
         [HttpGet("getAllOrders", Name = nameof(GetOrders))]
         public async Task<ActionResult<OrderOutputDto>>
             GetOrders([FromQuery] PageDtoParameters? parameters)
         {
-            var cacheKey = "OrderList";
             IEnumerable<OrderOutputDto> ordersDto;
-            var redis = new RedisUtil(_distributedCache);
-            var redisByte = await _distributedCache.GetAsync(cacheKey);
-            if (redisByte != null)
+            var orders = await _ticketRepository.GetOrdersAsync(parameters);
+            if (orders == null)
             {
-                var orderList = JsonConvert.DeserializeObject<List<Order>>(redis.RedisRead(redisByte));
-                ordersDto = _mapper.Map<IEnumerable<OrderOutputDto>>(orderList);
+                return NotFound();
             }
-            else
-            {
-                var orders = await _ticketRepository.GetOrdersAsync(parameters);
-                if (orders == null)
-                {
-                    return NotFound();
-                }
-
-                ordersDto = _mapper.Map<IEnumerable<OrderOutputDto>>(orders);
-                redis.RedisSave(cacheKey, ordersDto);
-            }
-
+            ordersDto = _mapper.Map<IEnumerable<OrderOutputDto>>(orders);
             return Ok(ordersDto);
         }
 
@@ -136,7 +121,6 @@ namespace TicketSystem.Api.Controllers
             var dtoToReturn = _mapper.Map<OrderDto>(entity);
             redis.RedisSave("Order_" + bookerId, dtoToReturn);
             redis.RedisRemove("OrderList_" + bookerId);
-            redis.RedisRemove("OrderList");
 
             return CreatedAtRoute(nameof(GetOrderForBooker),
                 new
@@ -201,7 +185,6 @@ namespace TicketSystem.Api.Controllers
 
             await _ticketRepository.SaveAsync();
             var redis = new RedisUtil(_distributedCache);
-            redis.RedisRemove("OrderList");
             redis.RedisRemove("OrderList_" + bookerId);
             redis.RedisRemove("Order_" + bookerId);
 

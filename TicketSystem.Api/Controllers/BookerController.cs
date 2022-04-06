@@ -60,29 +60,17 @@ public class BookerController : ControllerBase
     }
 
 
-    //redis update
+    
     [HttpGet("GetAllBookers")]
     public async Task<ActionResult<BookerDto>> GetAllBookers([FromQuery] PageDtoParameters? parameters)
     {
-        var cacheKey = "BookerList";
         IEnumerable<BookerDto> bookerDto;
-        var redis = new RedisUtil(_distributedCache);
-        var redisBookerByte = await _distributedCache.GetAsync(cacheKey);
-        if (redisBookerByte != null)
+        var bookers = await _ticketRepository.GetBookersAsync(parameters);
+        if (bookers == null)
         {
-            var bookerList = JsonConvert.DeserializeObject<List<Booker>>(redis.RedisRead(redisBookerByte));
-            bookerDto = _mapper.Map<IEnumerable<BookerDto>>(bookerList);
+            return NotFound();
         }
-        else
-        {
-            var bookers = await _ticketRepository.GetBookersAsync(parameters);
-            if (bookers == null)
-            {
-                return NotFound();
-            }
-            bookerDto = _mapper.Map<IEnumerable<BookerDto>>(bookers);
-            redis.RedisSave(cacheKey, bookerDto);
-        }
+        bookerDto = _mapper.Map<IEnumerable<BookerDto>>(bookers);
         return Ok(bookerDto);
     }
 
@@ -120,7 +108,6 @@ public class BookerController : ControllerBase
 
         var redis = new RedisUtil(_distributedCache);
         redis.RedisSave("Booker_" + dtoToReturn.bookerId, dtoToReturn);
-        redis.RedisRemove("BookerList");
 
         return CreatedAtRoute(nameof(GetBooker), dtoToReturn);
     }
@@ -176,7 +163,6 @@ public class BookerController : ControllerBase
 
         await _ticketRepository.SaveAsync();
         var redis = new RedisUtil(_distributedCache);
-        redis.RedisRemove("BookerList");
         redis.RedisRemove("Booker_" + bookerId);
 
         return NoContent();

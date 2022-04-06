@@ -67,28 +67,13 @@ namespace TicketSystem.Api.Controllers
         public async Task<ActionResult<LineDto>>
             GetLines([FromQuery] PageDtoParameters? parameters)
         {
-            var cacheKey = "LineList";
             IEnumerable<LineDto> lineDto;
-            var redis = new RedisUtil(_distributedCache);
-            var redisLineByte = await _distributedCache.GetAsync(cacheKey);
-            if (redisLineByte != null)
+            var lines = await _ticketRepository.GetLinesAsync(parameters);
+            if (lines == null)
             {
-                var lineList = JsonConvert.DeserializeObject<List<Line>>(redis.RedisRead(redisLineByte));
-                lineDto = _mapper.Map<IEnumerable<LineDto>>(lineList);
+                return NotFound();
             }
-            else
-            {
-                var lines = await _ticketRepository.GetLinesAsync(parameters);
-                if (lines == null)
-                {
-                    return NotFound();
-                }
-                lineDto = _mapper.Map<IEnumerable<LineDto>>(lines);
-                redis.RedisSave("LineList", lineDto);
-
-            }
-
-
+            lineDto = _mapper.Map<IEnumerable<LineDto>>(lines);
             return Ok(lineDto);
         }
 
@@ -139,7 +124,6 @@ namespace TicketSystem.Api.Controllers
 
             var redis = new RedisUtil(_distributedCache);
             redis.RedisSave("Line_" + dtoToReturn.LineId, dtoToReturn);
-            redis.RedisRemove("LineList");
 
             return CreatedAtRoute(nameof(GetLine), dtoToReturn);
         }
@@ -198,7 +182,6 @@ namespace TicketSystem.Api.Controllers
 
             await _ticketRepository.SaveAsync();
             var redis = new RedisUtil(_distributedCache);
-            redis.RedisRemove("LineList");
             redis.RedisRemove("Line_" + lineId);
 
             return NoContent();
