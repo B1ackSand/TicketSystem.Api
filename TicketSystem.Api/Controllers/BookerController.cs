@@ -123,6 +123,7 @@ public class BookerController : ControllerBase
         {
             //没获取就用put创建资源
             var bookerToAddEntity = _mapper.Map<Booker>(booker);
+            
 
             _ticketRepository.AddBooker(bookerToAddEntity);
 
